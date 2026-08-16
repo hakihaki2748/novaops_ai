@@ -8,7 +8,7 @@ import userController from "../controllers/user.controller.js";
 import validate from "../validations/validate.js"
 import updateStatusSchema from "../validations/schemas/userUpdateStatus.schema.js"
 import updateRoleSchema from "../validations/schemas/userUpdateRole.schema.js"
-import createUserSchema from "../validate/schemas/createUser.schema.js"
+import createUserSchema from "../validations/schemas/createUser.schema.js"
 
 router.get("/", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), userController.getUsers);
 router.get("/:id", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), userController.findUserById);
