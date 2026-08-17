@@ -99,17 +99,18 @@ const updateRole = async (id, role, connection ) => {
 }
 
 
-const createUser = async (data, connection ) => {
+const createUser = async ({ name, phone, email, password, role }, connection ) => {
     const sql = `
     INSERT INTO users 
-    (name, phone, email, password)
-    VALUES (?, ?, ?, ?)
+    (name, phone, email, password, role )
+    VALUES (?, ?, ?, ? ?)
     `
     const [result] = await connection.execute(sql, [
-        data.name,
-        data.phone,
-        data.email,
-        data.password,
+        name,
+        phone,
+        email,
+        password,
+        role
     ])
     return result.insertId;
 }

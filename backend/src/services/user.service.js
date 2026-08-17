@@ -133,7 +133,6 @@ const updateRole = async ({id, role, currentUser}) => {
 
 const createUser = async (payload, currentUser) => {
 
-    const connection = await transaction()
     try {
         //hanya owner dan admin yang bisa melakukan create
         if(currentUser.role !== "owner" && currentUser.role !== "admin"){
@@ -145,15 +144,23 @@ const createUser = async (payload, currentUser) => {
             throw new AppError("Tidak Memiliki Akses", 403);
         }
 
+        //password policy
+
+        
+        //password hash
+        const hashPassword = await bcrypt.hash(payload.password, 10)
+
+        const connection = await transaction()
+
         //temukan email lalu cek apakah ada atau tidak
         const findEmail = await userRepository.findUserByEmail(payload.email, connection);
         
+
         //jika ada maka munculkan error
         if(findEmail){
             throw new AppError("Email Sudah Digunakan", 400)
         }
 
-        const hashPassword = await bcrypt.hash(payload.password, 10)
 
         const userId = await userRepository.createUser({
             name: payload.name,
