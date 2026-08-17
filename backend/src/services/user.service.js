@@ -90,13 +90,14 @@ const updateStatus = async ({id, status, currentUser}) => {
 
 const updateRole = async ({id, role, currentUser}) => {
 
+        const connection =  await transaction();
+
     const validRoles = ["owner", "manager", "admin"];
     
      if(!validRoles.includes(role)) throw new AppError("Role Tidak Valid", 400);
 
     if(currentUser.role !== "owner") throw new AppError("Hanya Owner yang dapat mengubah role", 403);
         
-    const connection =  await transaction();
 
     try{
        
@@ -133,6 +134,8 @@ const updateRole = async ({id, role, currentUser}) => {
 
 const createUser = async (payload, currentUser) => {
 
+    const connection = await transaction()
+
     try {
         //hanya owner dan admin yang bisa melakukan create
         if(currentUser.role !== "owner" && currentUser.role !== "admin"){
@@ -145,15 +148,13 @@ const createUser = async (payload, currentUser) => {
         }
 
         //password policy
-        validasiPasswordPolicy = await validatePasswordPolicy(payload.password)
+        const policyPassword = validatePasswordPolicy(payload.password)
         
-        if(!validasiPasswordPolicy){
-            throw new AppError(validatePasswordPolicy.errors, 422)
+        if(!policyPassword.valid){
+            throw new AppError(policyPassword.errors, 422)
         }
         //password hash
         const hashPassword = await bcrypt.hash(payload.password, 10)
-
-        const connection = await transaction()
 
         //temukan email lalu cek apakah ada atau tidak
         const findEmail = await userRepository.findUserByEmail(payload.email, connection);
