@@ -142,15 +142,15 @@ const createUser = async (payload, currentUser) => {
 
         //admin tidak boleh membuat role manager
         if(currentUser.role === "admin" && payload.role == "manager"){
-            throw AppError("Tidak Memiliki Akses", 403);
+            throw new AppError("Tidak Memiliki Akses", 403);
         }
 
         //temukan email lalu cek apakah ada atau tidak
-        const findEmail = await userRepository.findUserByEmail(payload.email);
+        const findEmail = await userRepository.findUserByEmail(payload.email, connection);
         
         //jika ada maka munculkan error
-        if(findEmail.email === "payload.email"){
-            throw AppError("Email Sudah Digunakan", 400)
+        if(findEmail){
+            throw new AppError("Email Sudah Digunakan", 400)
         }
 
         const hashPassword = await bcrypt.hash(payload.password, 10)
