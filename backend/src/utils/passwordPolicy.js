@@ -1,15 +1,9 @@
 export function validatePasswordPolicy (password){
 
-    let valid = ""
+    let valid = true
     const errors = []
-    // minimum 12
-    if(typeof password !== "string"){
-        
-            valid = false,
-            errors.push("Password harus String")
-    
-    };
 
+    // minimum 12
     // maximum 100
     if(password.length < 12 || password.length > 100){
         valid = false,
@@ -26,7 +20,7 @@ export function validatePasswordPolicy (password){
     // lowercase
     if (!/[a-z]/.test(password)){
             valid = false,
-            error.push("Minimal ada 1 Huruf Kecil")
+            errors.push("Minimal ada 1 Huruf Kecil")
     };
 
     // number
@@ -38,11 +32,11 @@ export function validatePasswordPolicy (password){
     // symbol
     if(!/[^A-Za-z0-9]/.test(password)){
         valid = false
-        error.push("Minimal ada 1 Symbol")
+        errors.push("Minimal ada 1 Symbol")
     }
 
     return {
-        valid: true ,
+        valid,
         errors
     }
 }
