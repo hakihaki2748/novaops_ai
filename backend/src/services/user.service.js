@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt"
 import userRepository from "../repositories/user.repository.js";
 import activityRepository from "../repositories/activity.repository.js";
 import { transaction, commit, rollback } from "../config/transaction.js";
@@ -134,11 +135,33 @@ const createUser = async (payload, currentUser) => {
 
     const connection = await transaction()
     try {
+        //hanya owner dan admin yang bisa melakukan create
         if(currentUser.role !== "owner" && currentUser.role !== "admin"){
             throw new AppError("Tidak Memiliki Akses", 403)
         }
 
-        const userId = await userRepository.createUser(payload, connection)
+        //admin tidak boleh membuat role manager
+        if(currentUser.role === "admin" && payload.role == "manager"){
+            throw AppError("Tidak Memiliki Akses", 403);
+        }
+
+        //temukan email lalu cek apakah ada atau tidak
+        const findEmail = await userRepository.findUserByEmail(payload.email);
+        
+        //jika ada maka munculkan error
+        if(findEmail.email === "payload.email"){
+            throw AppError("Email Sudah Digunakan", 400)
+        }
+
+        const hashPassword = await bcrypt.hash(payload.password, 10)
+
+        const userId = await userRepository.createUser({
+            name: payload.name,
+            phone: payload.phone,
+            email: payload.email,
+            password: hashPassword,
+            role: payload.role
+        }, connection)
         
         await activityRepository.createLog({
             company_id: null,
