@@ -3,7 +3,7 @@ import userRepository from "../repositories/user.repository.js";
 import activityRepository from "../repositories/activity.repository.js";
 import { transaction, commit, rollback } from "../config/transaction.js";
 import AppError from "../utils/AppError.js";
-
+import { validatePasswordPolicy } from "../utils/passwordPolicy.js";
 const getUsers = async (query, user) => {
     
     //batasi page dan limit
@@ -145,8 +145,11 @@ const createUser = async (payload, currentUser) => {
         }
 
         //password policy
-
+        validasiPasswordPolicy = await validatePasswordPolicy(payload.password)
         
+        if(!validasiPasswordPolicy){
+            throw new AppError(validatePasswordPolicy.errors, 422)
+        }
         //password hash
         const hashPassword = await bcrypt.hash(payload.password, 10)
 
