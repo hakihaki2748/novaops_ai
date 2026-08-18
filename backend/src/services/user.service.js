@@ -237,9 +237,6 @@ const softDelete = async ({id, currentUser}) => {
             throw new AppError("Owner Tidak Bisa di Hapus", 400);
         }
 
-        if(targetUser.role === "manager" && currentUser.role === "admin") {
-            throw new AppError("Tidak Memiliki Akses", 403)
-        }
 
         await userRepository.softDelete(id, connection);
         
