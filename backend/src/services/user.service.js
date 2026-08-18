@@ -89,15 +89,16 @@ const updateStatus = async ({id, status, currentUser}) => {
 };  
 
 const updateRole = async ({id, role, currentUser}) => {
+    //selain owner dan admin ditolak
+    if(currentUser.role !== "owner" || currentUser.role !== "admin"){
+        throw new AppError("Tidak Memiliki Akses", 403)
+    }
 
-        const connection =  await transaction();
+    if(role === "owner") throw new AppError("Owner tidak Bisa di Ubah", 403)
 
-    const validRoles = ["owner", "manager", "admin"];
-    
-     if(!validRoles.includes(role)) throw new AppError("Role Tidak Valid", 400);
-
-    if(currentUser.role !== "owner") throw new AppError("Hanya Owner yang dapat mengubah role", 403);
-        
+    if(currentUser.role === "admin" && role === "manager") throw new AppError("Tidak Memiliki Akses", 403)
+            
+    const connection =  await transaction();
 
     try{
        
