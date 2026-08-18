@@ -1,19 +1,6 @@
 //import database
 import db from "../config/database.js";
 
-//find user
-const findUser = async (id) => {
-    const sql = `
-    SELECT id, name, email. phone, role, status
-    FROM users
-    WHERE id = ?
-    `
-
-    const [user] = await db.execute(sql, [id])
-    return user[0];
-}
-
-
 //buat function createLog
 const createLog = async ({
     company_id,
@@ -64,7 +51,7 @@ const findUserLogs = async ({ entity_type, entity_id },connection = db) => {
         SELECT *
         FROM activity_logs
         WHERE entity_type = ?
-        AND entity-id = ?
+        AND entity_id = ?
         ORDER BY created_at DESC
         `;
 
