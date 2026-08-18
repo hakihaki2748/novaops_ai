@@ -97,14 +97,9 @@ const updateStatus = async ({id, status, currentUser}) => {
 
 const updateRole = async ({id, role, currentUser}) => {
     
-    const allowed_role = ["admin", "manager", "user"]
     //selain owner dan admin ditolak
     if(currentUser.role !== "owner" && currentUser.role !== "admin"){
         throw new AppError("Tidak Memiliki Akses", 403)
-    }
-
-    if(!allowed_role.includes(role)){
-        throw new AppError("Role Tidak Terdaftar", 400)
     }
 
     if(role === "owner") throw new AppError("Owner tidak Bisa di Ubah", 403)
@@ -234,7 +229,7 @@ const softDelete = async ({id, currentUser}) => {
 
         //owner tidak bisa dihapus
         if(targetUser.role === "owner"){
-            throw new AppError("Owner Tidak Bisa di Hapus", 400);
+            throw new AppError("Owner Tidak Bisa di Hapus", 403);
         }
 
         //admin tidak bisa hapus manager
