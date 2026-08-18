@@ -78,7 +78,7 @@ const updateStatus = async ({id, status, currentUser}) => {
             company_id: null,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "update status",
+            event_type: "user.status_updated",
             entity_type: "user",
             entity_id: id,
             description: "merubah status user"
@@ -126,7 +126,7 @@ const updateRole = async ({id, role, currentUser}) => {
                 company_id: null,
                 user_id: currentUser.id,
                 actor_role: currentUser.role,
-                event_type: "update role",
+                event_type: "user.role_update",
                 entity_type: "user",
                 entity_id: id,
                 description: "merubah role user"
@@ -197,7 +197,7 @@ const createUser = async (payload, currentUser) => {
             company_id: null,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "create user",
+            event_type: "user.created",
             entity_type: "user",
             entity_id: userId,
             description: `${currentUser.role} menambahkan user baru`
@@ -244,7 +244,7 @@ const softDelete = async ({id, currentUser}) => {
             company_id: null,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "Menghapus User ",
+            event_type: "user.deleted",
             entity_type: "user",
             entity_id: id,
             description: `${currentUser.role} Mengahpus User`
