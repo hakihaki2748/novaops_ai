@@ -126,7 +126,7 @@ const updateRole = async ({id, role, currentUser}) => {
                 company_id: null,
                 user_id: currentUser.id,
                 actor_role: currentUser.role,
-                event_type: "user.role_update",
+                event_type: "user.role_updated",
                 entity_type: "user",
                 entity_id: id,
                 description: "merubah role user"
