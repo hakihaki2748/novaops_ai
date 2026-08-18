@@ -54,9 +54,15 @@ const findUserById = async (id, currentUser) => {
 
 
 const updateStatus = async ({id, status, currentUser}) => {
+    //selain admin dan owner tidak boleh
+    if(currentUser.role !== "owner" && currentUser.role !== "admin") throw new AppError("Tidak Memiliki Akses", 403);
 
-    if(currentUser.role !== "owner") throw new AppError("Tidak Punya Akses", 403);
+    //owner tidak bisa dirubah
+    if(status === "owner") throw new AppError("Owner Tidak Bisa Dirubah", 403)
 
+    //admin tidak bisa merubah manager
+    if(currentUser.role == "admin" && status === "manager") throw new AppError("Tidak Memiliki Akses", 403)
+    
     const connection = await transaction();
    
     try{
@@ -64,6 +70,11 @@ const updateStatus = async ({id, status, currentUser}) => {
         const targetUser = await userRepository.findUserById(id, connection);
 
         if(!targetUser) throw new AppError("User Tidak Ditemukan", 404);
+
+        //kecualikan target
+        if(targetUser.status === "owner") throw new AppError("Tidak Memiliki Akses", 403)
+        
+        if(targetUser.status === "manager" && currentUser.role === "admin") throw new Error("Tidak Memiliki Akses", 403)
 
         await userRepository.updateStatus(id, status, connection);
 
@@ -109,6 +120,8 @@ const updateRole = async ({id, role, currentUser}) => {
         }
 
         if(targetUser.role === "owner") throw new AppError("Tidak Memiliki Akses", 403)
+        
+        if(targetUser.role === "manager" && currentUser.role === "admin") throw new Error("Tidak Memiliki Akses", 403)
 
         await userRepository.updateRole(id, role, connection);
 
