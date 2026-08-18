@@ -77,12 +77,12 @@ const findUserById = async (id, connection = db ) => {
     return user[0];
 }
 
-const findUserByEmail = async (email) => {
+const findUserByEmail = async (email, connection) => {
     const sql = `
     SELECT id, name, email, phone, role, status FROM users
     WHERE email = ?;
     `
-    const [user] = await db.execute(sql, [email])
+    const [user] = await connection.execute(sql, [email])
     return user[0]
 }
 
@@ -138,7 +138,7 @@ const softDelete = async (id, connection ) => {
 
 
 export default {
-    // findAll,
+    findUserByEmail,
     findUsers,
     findUserById,
     updateStatus,
