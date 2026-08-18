@@ -90,7 +90,7 @@ const updateStatus = async ({id, status, currentUser}) => {
 
 const updateRole = async ({id, role, currentUser}) => {
     //selain owner dan admin ditolak
-    if(currentUser.role !== "owner" || currentUser.role !== "admin"){
+    if(currentUser.role !== "owner" && currentUser.role !== "admin"){
         throw new AppError("Tidak Memiliki Akses", 403)
     }
 
@@ -107,6 +107,8 @@ const updateRole = async ({id, role, currentUser}) => {
         if(!targetUser){
             throw new AppError("User Tidak Ditemukan", 404);
         }
+
+        if(targetUser.role === "owner") throw new AppError("Tidak Memiliki Akses", 403)
 
         await userRepository.updateRole(id, role, connection);
 
