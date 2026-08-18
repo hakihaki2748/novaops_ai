@@ -4,30 +4,37 @@ import activityRepository from "../repositories/activity.repository.js";
 import { transaction, commit, rollback } from "../config/transaction.js";
 import AppError from "../utils/AppError.js";
 import { validatePasswordPolicy } from "../utils/passwordPolicy.js";
-const getUsers = async (query, user) => {
+
+
+const getUsers = async (query, currentUser) => {
     
     //batasi page dan limit
     let page = Number(query.page) || 1
     let limit = Number(query.limit) || 10
     let activeOnly = query.activeOnly === "true" ? true : false;
     
-    // console.log(user.role)
-
     //validasi limit
     if(page < 1) page = 1;
     if(limit < 1 ) limit = 10;
     if(limit > 100 ) limit = 100;
+
+    //permission
     
     //panggil repository
-    return await userRepository.findUsers({
+    const users = await userRepository.findUsers({
         search: query.search,
         page,
         limit,
         sortBy: query.sortBy,
         sortOrder: query.sortOrder,
         activeOnly: activeOnly,
-        currentRole: user.role
+        currentRole: currentUser.role
     })
+
+    if(currentUser.role !== "owner"){
+        return users.filter((user) => user.role !== "owner")
+    }
+    return users;
 };
 
 
@@ -40,12 +47,8 @@ const findUserById = async (id, currentUser) => {
             throw new AppError("ID Tidak Ditemukan", 404);
         }
 
-        if(currentUser.role !== "owner" && targetUser.role === "owner"){
-            throw new AppError("Tidak Punya Akses", 403)
-        }
-
-        if(currentUser.role === "user" && Number(targetUser.id) !== Number(currentUser.id)){
-            throw new AppError("Tidak Punya Akses", 403)
+        if(currentUser.role !== "owner" && targetUser.role === "owner") {
+            throw new AppError("Tidak Memiliki Akses", 403)
         }
 
         return targetUser;
