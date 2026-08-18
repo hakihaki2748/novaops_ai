@@ -1,14 +1,5 @@
 import db from "../config/database.js";
 
-// const findAll = async () => {
-//     const query = `
-//     SELECT * FROM users;
-//     `
-//     const [users] = await db.execute(query)
-//     return users;
-// }
-
-
 //whitelist kolom yang boleh digunakan untuk sorting
     const allowedSort = new Set([
         "id", 
@@ -27,7 +18,8 @@ const findUsers = async ({
     let sql = `
     SELECT id, name, email, role, status
     FROM users
-    WHERE 1
+    WHERE 1 
+    AND deleted_at IS NULL
     `
     //buat variabel untuk menampung nilai params dinamis
     const params = []
