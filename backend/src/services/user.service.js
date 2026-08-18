@@ -211,7 +211,11 @@ const createUser = async (payload, currentUser) => {
 };
 
 const softDelete = async ({id, currentUser}) => {
+    //selain owner dan admin tidak boleh
+    if(currentUser.role !== "owner" && currentUser.role === "admin") throw new AppError("Tidak Memiliki Akses", 403)
+    
     const connection = await transaction();
+    
     try{
         const targetUser = await userRepository.findUserById(id, connection);
 
@@ -220,14 +224,15 @@ const softDelete = async ({id, currentUser}) => {
             throw new AppError("User Tidak Ditemukan", 404);
         }
 
-        //owner tidak boleh menghapus dirinya sendiri
-        if(currentUser.role === "owner" && targetUser.id === currentUser.id){
-           
-            throw new AppError("owner tidak boleh menghapus diri sendiri", 400);
+        //owner tidak bisa dihapus
+        if(targetUser.role === "owner"){
+            throw new AppError("Owner Tidak Bisa di Hapus", 400);
         }
 
-        if(currentUser.role !== "owner") throw new AppError("Hanya Owner yang Dapat Menghapus", 403)
-        
+        if(targetUser.role === "manager" && currentUser.role === "admin") {
+            throw new AppError("Tidak Memiliki Akses", 403)
+        }
+
         await userRepository.softDelete(id, connection);
         
         await activityRepository.createLog({
