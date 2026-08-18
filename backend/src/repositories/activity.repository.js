@@ -63,7 +63,6 @@ const findUserLogs = async ({ entity_type, entity_id },connection = db) => {
 
 
 export default {
-    findUser,
     createLog,
     findUserLogs,
 }

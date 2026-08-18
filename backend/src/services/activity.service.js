@@ -13,7 +13,7 @@ const getUserLogs = async (id, currentUser) => {
         throw new AppError("Anda Tidak Memiliki Akses", 403);
     }
 
-    if (currentUser.role === "user" && targetUser.id !== currentUser.id){
+    if (currentUser.role === "user" && Number(targetUser.id) !== Number(currentUser.id)){
         throw new AppError("Tidak Memiliki Akses", 403)
     }
 
