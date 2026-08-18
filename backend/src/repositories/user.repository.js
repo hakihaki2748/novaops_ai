@@ -70,7 +70,7 @@ const findUserById = async (id, connection = db ) => {
     return user[0];
 }
 
-const findUserByEmail = async (email, connection) => {
+const findUserByEmail = async (email, connection = db) => {
     const sql = `
     SELECT id, name, email, phone, role, status FROM users
     WHERE email = ?;
