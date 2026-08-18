@@ -1,6 +1,19 @@
 //import database
 import db from "../config/database.js";
 
+//find user
+const findUser = async (id) => {
+    const sql = `
+    SELECT id, name, email. phone, role, status
+    FROM users
+    WHERE id = ?
+    `
+
+    const [user] = await db.execute(sql, [id])
+    return user[0];
+}
+
+
 //buat function createLog
 const createLog = async ({
     company_id,
@@ -45,23 +58,25 @@ const createLog = async ({
 }
 
 //buat function findUserLogs
-const findUserLogs = async (userId, connection = db) => {
+const findUserLogs = async ({ entity_type, entity_id },connection = db) => {
     //buat sql
     const sql = `
         SELECT *
         FROM activity_logs
-        WHERE entity_id = ?
+        WHERE entity_type = ?
+        AND entity-id = ?
         ORDER BY created_at DESC
         `;
 
     //kita lakukan destructuring array
-    const [result] = await connection.execute(sql, [userId])
+    const [result] = await connection.execute(sql, [entity_type, entity_id])
 
     return result;
 }
 
 
 export default {
+    findUser,
     createLog,
     findUserLogs,
 }
