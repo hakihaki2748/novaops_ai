@@ -134,37 +134,36 @@ const updateRole = async ({id, role, currentUser}) => {
 
 const createUser = async (payload, currentUser) => {
 
+     //hanya owner dan admin yang bisa melakukan create
+    if(currentUser.role !== "owner" && currentUser.role !== "admin"){
+        throw new AppError("Tidak Memiliki Akses", 403)
+    }
+
+    //admin tidak boleh membuat role manager
+    if(currentUser.role === "admin" && payload.role == "manager"){
+        throw new AppError("Tidak Memiliki Akses", 403);
+    }
+
+    //password policy
+    const policyPassword = validatePasswordPolicy(payload.password)
+    
+    if(!policyPassword.valid){
+        throw new AppError(policyPassword.errors, 422)
+    }
+    //password hash
+    const hashPassword = await bcrypt.hash(payload.password, 10)
+
     const connection = await transaction()
 
+    //temukan email lalu cek apakah ada atau tidak
+    const findEmail = await userRepository.findUserByEmail(payload.email, connection);
+    
+    //jika ada maka munculkan error
+    if(findEmail){
+        throw new AppError("Email Sudah Digunakan", 400)
+    }
+
     try {
-        //hanya owner dan admin yang bisa melakukan create
-        if(currentUser.role !== "owner" && currentUser.role !== "admin"){
-            throw new AppError("Tidak Memiliki Akses", 403)
-        }
-
-        //admin tidak boleh membuat role manager
-        if(currentUser.role === "admin" && payload.role == "manager"){
-            throw new AppError("Tidak Memiliki Akses", 403);
-        }
-
-        //password policy
-        const policyPassword = validatePasswordPolicy(payload.password)
-        
-        if(!policyPassword.valid){
-            throw new AppError(policyPassword.errors, 422)
-        }
-        //password hash
-        const hashPassword = await bcrypt.hash(payload.password, 10)
-
-        //temukan email lalu cek apakah ada atau tidak
-        const findEmail = await userRepository.findUserByEmail(payload.email, connection);
-        
-
-        //jika ada maka munculkan error
-        if(findEmail){
-            throw new AppError("Email Sudah Digunakan", 400)
-        }
-
 
         const userId = await userRepository.createUser({
             name: payload.name,
