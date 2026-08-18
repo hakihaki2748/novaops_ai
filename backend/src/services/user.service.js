@@ -212,10 +212,10 @@ const createUser = async (payload, currentUser) => {
 
 const softDelete = async ({id, currentUser}) => {
     //selain owner dan admin tidak boleh
-    if(currentUser.role !== "owner" && currentUser.role === "admin") throw new AppError("Tidak Memiliki Akses", 403)
+    if(currentUser.role !== "owner" && currentUser.role !== "admin") throw new AppError("Tidak Memiliki Akses", 403)
     
     const connection = await transaction();
-    
+
     try{
         const targetUser = await userRepository.findUserById(id, connection);
 
