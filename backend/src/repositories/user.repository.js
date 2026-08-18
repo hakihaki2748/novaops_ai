@@ -77,6 +77,14 @@ const findUserById = async (id, connection = db ) => {
     return user[0];
 }
 
+const findUserByEmail = async (email) => {
+    const sql = `
+    SELECT id, name, email, phone, role, status FROM users
+    WHERE email = ?;
+    `
+    const [user] = await db.execute(sql, [email])
+}
+
 const updateStatus = async (id, status, connection ) => {
     const sql = `
     UPDATE users
@@ -103,7 +111,7 @@ const createUser = async ({ name, phone, email, password, role }, connection ) =
     const sql = `
     INSERT INTO users 
     (name, phone, email, password, role )
-    VALUES (?, ?, ?, ? ?)
+    VALUES (?, ?, ?, ?, ?)
     `
     const [result] = await connection.execute(sql, [
         name,

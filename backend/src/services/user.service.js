@@ -29,6 +29,7 @@ const getUsers = async (query, currentUser) => {
         currentRole: currentUser.role
     })
 
+    return users;
 };
 
 
