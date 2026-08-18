@@ -158,10 +158,11 @@ const createUser = async (payload, currentUser) => {
     //password hash
     const hashPassword = await bcrypt.hash(payload.password, 10)
 
+    const connection = await transaction()
+
     
 
     try {
-        const connection = await transaction()
 
         //temukan email lalu cek apakah ada atau tidak
         const findEmail = await userRepository.findUserByEmail(payload.email, connection);
