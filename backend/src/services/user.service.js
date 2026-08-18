@@ -139,6 +139,11 @@ const createUser = async (payload, currentUser) => {
         throw new AppError("Tidak Memiliki Akses", 403)
     }
 
+    //role owner tidak bisa dibuat
+    if(currentUser.role === "admin" || currentUser.role === "owner" && payload.role === "owner"){
+        throw new AppError("Role Owner Tidak Bisa Dibuat", 403)
+    }
+
     //admin tidak boleh membuat role manager
     if(currentUser.role === "admin" && payload.role == "manager"){
         throw new AppError("Tidak Memiliki Akses", 403);
