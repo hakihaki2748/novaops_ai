@@ -63,7 +63,8 @@ const findUsers = async ({
 const findUserById = async (id, connection = db ) => {
     const sql = `
     SELECT id, name, email, phone, role, status FROM users
-    WHERE id = ?;
+    WHERE id = ?
+    AND deleted_at IS NULL;
     `
     const [user] = await connection.execute(sql, [id])
     return user[0];

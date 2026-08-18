@@ -46,6 +46,10 @@ const findUserById = async (id, currentUser) => {
             throw new AppError("Tidak Memiliki Akses", 403)
         }
 
+        if(targetUser.role === "owner"  && Number(targetUser.id) !== Number(currentUser.id)){
+            throw new AppError("Tidak Memiliki Akses", 403)
+        }
+
         return targetUser;
    
 };
