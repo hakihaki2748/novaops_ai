@@ -140,7 +140,7 @@ const createUser = async (payload, currentUser) => {
     }
 
     //role owner tidak bisa dibuat
-    if(currentUser.role === "admin" || currentUser.role === "owner" && payload.role === "owner"){
+    if(payload.role === "owner"){
         throw new AppError("Role Owner Tidak Bisa Dibuat", 403)
     }
 
@@ -158,17 +158,18 @@ const createUser = async (payload, currentUser) => {
     //password hash
     const hashPassword = await bcrypt.hash(payload.password, 10)
 
-    const connection = await transaction()
-
-    //temukan email lalu cek apakah ada atau tidak
-    const findEmail = await userRepository.findUserByEmail(payload.email, connection);
     
-    //jika ada maka munculkan error
-    if(findEmail){
-        throw new AppError("Email Sudah Digunakan", 400)
-    }
 
     try {
+        const connection = await transaction()
+
+        //temukan email lalu cek apakah ada atau tidak
+        const findEmail = await userRepository.findUserByEmail(payload.email, connection);
+        
+        //jika ada maka munculkan error
+        if(findEmail){
+            throw new AppError("Email Sudah Digunakan", 400)
+        }
 
         const userId = await userRepository.createUser({
             name: payload.name,
