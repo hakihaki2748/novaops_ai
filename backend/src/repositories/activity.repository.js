@@ -50,7 +50,7 @@ const findUserLogs = async (userId, connection = db) => {
     const sql = `
         SELECT *
         FROM activity_logs
-        WHERE company_id ? AND user_id = ?
+        WHERE entity_id = ?
         ORDER BY created_at DESC
         `;
 
