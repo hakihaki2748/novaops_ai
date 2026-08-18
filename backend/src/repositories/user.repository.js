@@ -83,6 +83,7 @@ const findUserByEmail = async (email) => {
     WHERE email = ?;
     `
     const [user] = await db.execute(sql, [email])
+    return user[0]
 }
 
 const updateStatus = async (id, status, connection ) => {
