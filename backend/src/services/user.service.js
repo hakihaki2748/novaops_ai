@@ -103,7 +103,8 @@ const updateRole = async ({id, role, currentUser}) => {
     }
 
     if(role === "owner") throw new AppError("Owner tidak Bisa di Ubah", 403)
-
+    
+    //admin tidak bisa merubah role menjadi manager
     if(currentUser.role === "admin" && role === "manager") throw new AppError("Tidak Memiliki Akses", 403)
             
     const connection =  await transaction();
@@ -118,6 +119,7 @@ const updateRole = async ({id, role, currentUser}) => {
 
         if(targetUser.role === "owner") throw new AppError("Tidak Memiliki Akses", 403)
         
+        //admin tidak bisa merubah role manager
         if(targetUser.role === "manager" && currentUser.role === "admin") throw new AppError("Tidak Memiliki Akses", 403)
 
         await userRepository.updateRole(id, role, connection);

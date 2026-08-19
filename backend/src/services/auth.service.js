@@ -28,7 +28,14 @@ const login = async (data) => {
     })
 
     return {
-        user,
+        user:  {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            status: user.status
+        },
+        
         token
     }
 
