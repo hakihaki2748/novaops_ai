@@ -1,6 +1,17 @@
 //import database
 import db from "../config/database.js";
 
+
+//findUserByid
+const findUserById = async (id, connection = db ) => {
+    const sql = `
+    SELECT id, name, email, phone, role, status FROM users
+    WHERE id = ?
+    `
+    const [user] = await connection.execute(sql, [id])
+    return user[0];
+}
+
 //buat function createLog
 const createLog = async ({
     company_id,
@@ -63,6 +74,7 @@ const findUserLogs = async ({ entity_type, entity_id },connection = db) => {
 
 
 export default {
+    findUserById,
     createLog,
     findUserLogs,
 }

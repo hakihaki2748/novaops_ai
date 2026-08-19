@@ -1,11 +1,10 @@
 //import repository
-import userRepository from '../repositories/user.repository.js';
 import activityRepository from '../repositories/activity.repository.js';
 import AppError from '../utils/AppError.js';
 
 const getUserLogs = async (id, currentUser) => {
     //cari id
-    const targetUser = await userRepository.findUserById(id)
+    const targetUser = await activityRepository.findUserById(id)
     
     if(!targetUser) throw new AppError("User Tidak Ditemukan", 404);
 

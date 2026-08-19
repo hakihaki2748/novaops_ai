@@ -81,7 +81,7 @@ const updateStatus = async ({id, status, currentUser}) => {
             event_type: "user.status_updated",
             entity_type: "user",
             entity_id: id,
-            description: "merubah status user"
+            description: `${currentUser.role} merubah status user`
         }, connection)
 
         await commit(connection);
@@ -129,7 +129,7 @@ const updateRole = async ({id, role, currentUser}) => {
                 event_type: "user.role_updated",
                 entity_type: "user",
                 entity_id: id,
-                description: "merubah role user"
+                description: `${currentUser.role} merubah role user`
             }, connection);
 
         await commit(connection);
