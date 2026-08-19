@@ -8,7 +8,7 @@
 //     console.log(`Server is running on port ${PORT}`)
 // });
 
-import dotenv from "dotenv/config";
+import "dotenv/config";
 import app from "./src/app.js";
 
 
