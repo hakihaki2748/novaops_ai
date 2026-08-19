@@ -52,9 +52,7 @@ const findUsers = async ({
     sortOrder = String(sortOrder)?.toUpperCase() === "DESC" ? "DESC" : "ASC"
 
     sql += ` ORDER BY ${sortBy} ${sortOrder} `
-    sql += ` LIMIT ? OFFSET ?`
-
-    params.push(limit, offset)
+    sql += ` LIMIT ${limit} OFFSET ${offset}`
 
     const [result] = await db.execute(sql, params)
     return result;

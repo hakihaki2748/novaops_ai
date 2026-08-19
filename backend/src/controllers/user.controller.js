@@ -1,5 +1,5 @@
 import userService from "../services/user.service.js";
-import apiResponse from "../helpers/apiResponse.js";
+import apiResponse from "../utils/apiResponse.js";
 
 
 const getUsers = async (req, res, next) => {

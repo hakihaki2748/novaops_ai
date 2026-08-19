@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createUserSchema = z.object({
+const createUserSchema = z.object({
     name: z
         .string()
         .trim()
@@ -27,3 +27,5 @@ export const createUserSchema = z.object({
     role: z.enum(["admin", "manager", "user"])
 
 }).strict();
+
+export default createUserSchema

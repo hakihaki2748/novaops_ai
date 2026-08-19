@@ -32,7 +32,7 @@ const rollback = async (conn) => {
     //jangan memanggil release() disini, karena dipanggil di service, dan pemanggilan sekali saja
 }
 
-export default {
+export {
     transaction,
     commit,
     rollback,

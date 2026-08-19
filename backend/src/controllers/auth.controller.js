@@ -1,5 +1,5 @@
 import authService from "../services/auth.service.js"
-import apiResponse from "../helpers/apiResponse.js";
+import apiResponse from "../utils/apiResponse.js";
 
 const login = async (req, res) => {
     try {
