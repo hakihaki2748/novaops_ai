@@ -8,9 +8,7 @@ const login = async (req, res) => {
             apiResponse.success("Login Berhasil", result)
          );
     } catch (err) {
-        res.status( err.statusCode || 500 ).json(
-            apiResponse.error(err.message)
-        );
+        next(err)
     }
 }
 
@@ -23,9 +21,7 @@ const register = async (req, res) => {
             apiResponse.success("Register Berhasil", result)
         )
     } catch (err) {
-        res.status( err.statusCode || 500).json(
-            apiResponse.error(err.message)
-        );
+        next(err)
     }
 }
 
