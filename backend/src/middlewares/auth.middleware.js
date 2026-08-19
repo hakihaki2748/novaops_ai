@@ -16,7 +16,7 @@ const authMiddleware = (req, res, next) => {
     const [scheme, token] = authHeaders.split(" ");
 
     //jika bearer || token salah atau tidak valid
-    if(!scheme !== "Bearer" || !token){
+    if(scheme !== "Bearer" || !token){
         return res.status(401).json({
             success: false,
             messages: "Format Token Salah"
