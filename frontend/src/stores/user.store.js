@@ -6,7 +6,7 @@ export const useUserStore = defineStore("user", {
     
     //state digunakan untuk menyimpan nilai atau gudang, bersifat reaktif
     state: () => ({
-        user: null,
+        users: [],
         logs: [],
         loading: false,
         error: null
@@ -21,12 +21,10 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await getUsers(params);
-                this.user = res.data.data
+                this.users = res.data.data
             } catch (err) {
                 this.error = err.message
-                this.user = null
-
-                console.log(err.message)
+                this.users = []
             }finally{
                 this.loading = false
             }
@@ -39,27 +37,26 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await getUserById(id);
-                this.user = res.data.data
+                this.users = res.data.data
             } catch (err) {
                 this.error = err.message
-                this.user = null
-
-                console.log(err.message)
+                this.users = []
             }finally{
                 this.loading = false
             }
         },
 
+        //create user
         async createUser (payload) {
             try {
                 this.loading = true
                 this.error = null
 
                 const res = await getUsers(payload);
-                this.user = res.data.data
+                this.users = res.data.data
             } catch (err) {
                 this.error = err.message
-                this.user = null
+                this.users = []
 
                 console.log(err.message)
             }finally{
