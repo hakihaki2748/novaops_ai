@@ -8,6 +8,12 @@ export const useUserStore = defineStore("user", {
     state: () => ({
         users: [],
         user: null,
+        pagination: {
+            page: 1,
+            limit: 10,
+            total: 0,
+            totalPages: 0
+        },
         loading: false,
         loadingDetail: false,
         error: null
