@@ -26,7 +26,7 @@ export const useUserStore = defineStore("user", {
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
 
-                throw err
+                this.users = [];
             }finally{
                 this.loading = false
             }
