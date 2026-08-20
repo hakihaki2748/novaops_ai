@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import { getUser, updateStatus, updateRole, getLogs, restoreUser } from "../services/user.api"
+import { getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser } from "../services/user.api"
 
 export const useUserStore = defineStore("user", {
     
@@ -15,12 +15,12 @@ export const useUserStore = defineStore("user", {
     //actions digunakan untuk menjalankan logika atau fungsi untuk mengambil nilai
     actions: {
         //digunakan untuk mengambil data dan di import ke component
-        async loadUser (id) {
+        async loadUsers (params) {
             try {
                 this.loading = true
                 this.error = null
 
-                const res = await getUser(id);
+                const res = await getUsers(params);
                 this.user = res.data.data
             } catch (err) {
                 this.error = err.message
@@ -32,39 +32,54 @@ export const useUserStore = defineStore("user", {
             }
         },
 
-        //digunakan untuk mengambil logs
-        async loadLogs (id) {
+        //ambil user by id
+        async loadUser (id) {
             try {
-                const res = await getLogs(id);
-                
-                this.logs = res.data.data
-                
+                this.loading = true
+                this.error = null
+
+                const res = await getUserById(id);
+                this.user = res.data.data
             } catch (err) {
+                this.error = err.message
+                this.user = null
+
                 console.log(err.message)
-                this.logs = []
+            }finally{
+                this.loading = false
+            }
+        },
+
+        async createUser (payload) {
+            try {
+                this.loading = true
+                this.error = null
+
+                const res = await getUsers(payload);
+                this.user = res.data.data
+            } catch (err) {
+                this.error = err.message
+                this.user = null
+
+                console.log(err.message)
+            }finally{
+                this.loading = false
             }
         },
 
         //digunakan untuk merubah status
-        async changeStatus (id, status) {
-            
+        async updateStatus (id, status) {
             await updateStatus(id, status);
-            await this.loadUser(id);
-            await this.loadLogs(id);
         },
 
         //digunakan untuk merubah role
-        async changeRole (id, role){
+        async updateRole (id, role){
             await updateRole(id, role);
-            await this.loadUser(id);
-            await this.loadLogs(id);
         },
 
-        //digunakan untuk melakukan restore
-        async restore (id){
-            await restoreUser(id);
-            await this.loadUser(id);
-            await this.loadLogs(id);
+        //untuk menghapus
+        async deleteUser (id) {
+            await deleteUser(id);
         }
     }
 
