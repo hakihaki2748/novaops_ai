@@ -131,6 +131,24 @@ export const useUserStore = defineStore("user", {
             } finally {
                 this.loading = false
             }
+        },
+
+        //untuk mengatus halaman page
+        async setPage (page) {
+            if(page < 1){
+                return;
+            }
+
+            if(this.pagination.totalPages > 0 && page > this.pagination.totalPages){
+                return;
+            }
+
+            this.pagination.page = page;
+
+            await this.loadUsers({
+                page: this.pagination.page,
+                limit: this.pagination.limit
+            })
         }
     }
 
