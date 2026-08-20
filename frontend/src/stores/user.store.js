@@ -29,6 +29,7 @@ export const useUserStore = defineStore("user", {
 
                 const res = await getUsers(params);
                 this.users = res.data.data
+                this.pagination = res.data.pagination
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
 
