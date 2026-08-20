@@ -7,7 +7,6 @@ export const useUserStore = defineStore("user", {
     //state digunakan untuk menyimpan nilai atau gudang, bersifat reaktif
     state: () => ({
         users: [],
-        logs: [],
         loading: false,
         error: null
     }),
