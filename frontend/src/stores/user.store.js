@@ -22,8 +22,10 @@ export const useUserStore = defineStore("user", {
                 const res = await getUsers(params);
                 this.users = res.data.data
             } catch (err) {
-                this.error = err.message
+                this.error = err.response?.data?.message || err.message
                 this.users = []
+
+                throw err
             }finally{
                 this.loading = false
             }
@@ -38,8 +40,10 @@ export const useUserStore = defineStore("user", {
                 const res = await getUserById(id);
                 this.users = res.data.data
             } catch (err) {
-                this.error = err.message
+                this.error = err.response?.data?.message || err.message
                 this.users = []
+
+                throw err
             }finally{
                 this.loading = false
             }
@@ -51,13 +55,14 @@ export const useUserStore = defineStore("user", {
                 this.loading = true
                 this.error = null
 
-                const res = await getUsers(payload);
+                const res = await createUser(payload);
                 this.users = res.data.data
             } catch (err) {
-                this.error = err.message
+                this.error = err.response?.data?.message || err.message
                 this.users = []
 
-                console.log(err.message)
+                throw err
+
             }finally{
                 this.loading = false
             }
