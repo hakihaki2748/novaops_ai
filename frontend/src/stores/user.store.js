@@ -7,7 +7,9 @@ export const useUserStore = defineStore("user", {
     //state digunakan untuk menyimpan nilai atau gudang, bersifat reaktif
     state: () => ({
         users: [],
+        user: null,
         loading: false,
+        loadingDetail: false,
         error: null
     }),
 
@@ -33,7 +35,7 @@ export const useUserStore = defineStore("user", {
         //ambil user by id
         async loadUser (id) {
             try {
-                this.loading = true
+                this.loadingDetail = true
                 this.error = null
 
                 const res = await getUserById(id);
@@ -43,7 +45,7 @@ export const useUserStore = defineStore("user", {
 
                 throw err
             }finally{
-                this.loading = false
+                this.loadingDetail = false
             }
         },
 
