@@ -35,36 +35,14 @@ const login = async (data) => {
             role: user.role,
             status: user.status
         },
-        
+
         token
     }
 
 }
 
-const register = async (data) => {
-     
-    const findUser = await authRepository.findUserByEmail(data.email);
-
-    if(findUser){
-        throw new AppError("email sudah digunakan")
-    }
-    
-    //kita lakukan hashPassword sebelum didaftarkan
-    const hashPassword = await bcrypt.hash(data.password, 10)
-
-    const user = await authRepository.createUser({
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        password: hashPassword
-    })
-
-    return user;
-}
-
 
 export default {
     login,
-    register,
 }
 

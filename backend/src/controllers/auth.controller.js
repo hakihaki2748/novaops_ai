@@ -12,23 +12,6 @@ const login = async (req, res) => {
     }
 }
 
-const register = async (req, res) => {
-    try {
-
-        const result = await authService.register(req.body);
-
-        res.status(200).json(
-            apiResponse.success("Register Berhasil", result)
-        )
-    } catch (err) {
-        next(err)
-    }
-}
-
-
-
-
 export  default {
     login,
-    register,
 };
