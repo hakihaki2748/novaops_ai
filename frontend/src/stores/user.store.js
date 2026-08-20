@@ -23,7 +23,6 @@ export const useUserStore = defineStore("user", {
                 this.users = res.data.data
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
-                this.users = []
 
                 throw err
             }finally{
@@ -41,7 +40,6 @@ export const useUserStore = defineStore("user", {
                 this.users = res.data.data
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
-                this.users = []
 
                 throw err
             }finally{
@@ -59,8 +57,6 @@ export const useUserStore = defineStore("user", {
                 this.users = res.data.data
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
-                this.users = []
-
                 throw err
 
             }finally{
@@ -74,7 +70,7 @@ export const useUserStore = defineStore("user", {
                 this.loading = true
                 this.error = null
 
-                const res = await updateRole(id, status)
+                const res = await updateStatus(id, status)
 
                 return res.data
             } catch (err) {
@@ -110,7 +106,22 @@ export const useUserStore = defineStore("user", {
 
         //untuk menghapus
         async deleteUser (id) {
-            await deleteUser(id);
+            try {
+                this.loading = true
+                this.error = null
+
+                const res = await deleteUser(id)
+
+                return res.data
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    err.message
+
+                throw err
+            } finally {
+                this.loading = false
+            }
         }
     }
 
