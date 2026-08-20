@@ -33,5 +33,5 @@ const deleteUser = (id) => {
 }
 
 export {
-    getUsers, getUserById, updateStatus, updateRole, deleteUser,
+    getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser,
 }
