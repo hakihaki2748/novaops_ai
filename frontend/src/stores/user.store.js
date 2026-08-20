@@ -70,12 +70,42 @@ export const useUserStore = defineStore("user", {
 
         //digunakan untuk merubah status
         async updateStatus (id, status) {
-            await updateStatus(id, status);
+            try {
+                this.loading = true
+                this.error = null
+
+                const res = await updateRole(id, status)
+
+                return res.data
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    err.message
+
+                throw err
+            } finally {
+                this.loading = false
+            }
         },
 
         //digunakan untuk merubah role
         async updateRole (id, role){
-            await updateRole(id, role);
+            try {
+                this.loading = true
+                this.error = null
+
+                const res = await updateRole(id, role)
+
+                return res.data
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    err.message
+
+                throw err
+            } finally {
+                this.loading = false
+            }
         },
 
         //untuk menghapus
