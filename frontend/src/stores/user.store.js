@@ -22,7 +22,14 @@ export const useUserStore = defineStore("user", {
     //actions digunakan untuk menjalankan logika atau fungsi untuk mengambil nilai
     actions: {
         //digunakan untuk mengambil data dan di import ke component
-        async loadUsers (params) {
+        async loadUsers (params = {}) {
+
+            params = {
+                page: this.pagination.page,
+                limit: this.pagination.limit,
+                ...params
+            }
+
             try {
                 this.loading = true
                 this.error = null
