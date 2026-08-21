@@ -53,7 +53,7 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await getUserById(id);
-                this.users = res.data.data
+                this.user = res.data.data
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
 
