@@ -28,6 +28,7 @@ export const useUserStore = defineStore("user", {
             params = {
                 page: this.pagination.page,
                 limit: this.pagination.limit,
+                search: this.search,
                 ...params
             }
 
@@ -58,6 +59,8 @@ export const useUserStore = defineStore("user", {
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
 
+                this.user = null
+
                 throw err
             }finally{
                 this.loadingDetail = false
@@ -71,7 +74,10 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await createUser(payload);
+
                 await this.loadUser()
+
+                await this.refreshUsers()
 
                 return res.data;
 
@@ -91,6 +97,10 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await updateStatus(id, status)
+
+                await this.loadUser()
+
+                await this.refreshUsers()
 
                 return res.data
             } catch (err) {
@@ -112,6 +122,10 @@ export const useUserStore = defineStore("user", {
 
                 const res = await updateRole(id, role)
 
+                await this.loadUser()
+
+                await this.refreshUsers()
+
                 return res.data
             } catch (err) {
                 this.error =
@@ -131,6 +145,9 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await deleteUser(id)
+
+                await this.loadUser()
+                 await this.refreshUsers()
 
                 return res.data
             } catch (err) {
@@ -156,20 +173,21 @@ export const useUserStore = defineStore("user", {
 
             this.pagination.page = page;
 
+            await this.loadUsers()
+        },
+
+        async setSearch (search) {
+            this.search = search
+            this.pagination.page = 1
+
+            await this.loadUsers()
+        },
+
+        async refreshUsers () {
             await this.loadUsers({
                 page: this.pagination.page,
                 limit: this.pagination.limit,
                 search: this.search
-            })
-        },
-
-        async setSearch (search) {
-            this.pagination.page = 1
-
-            await this.loadUsers({
-                page: 1,
-                limit: this.pagination.limit,
-                search: search,
             })
         }
     }
