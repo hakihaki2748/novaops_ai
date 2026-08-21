@@ -14,6 +14,7 @@ export const useUserStore = defineStore("user", {
             total: 0,
             totalPages: 0
         },
+        search: "",
         loading: false,
         loadingDetail: false,
         error: null
