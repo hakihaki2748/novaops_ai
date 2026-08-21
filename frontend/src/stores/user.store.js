@@ -155,7 +155,8 @@ export const useUserStore = defineStore("user", {
 
             await this.loadUsers({
                 page: this.pagination.page,
-                limit: this.pagination.limit
+                limit: this.pagination.limit,
+                search: this.search
             })
         },
 
