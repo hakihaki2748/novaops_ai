@@ -71,7 +71,10 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await createUser(payload);
-                this.users = res.data.data
+                await this.loadUser()
+
+                return res.data;
+
             } catch (err) {
                 this.error = err.response?.data?.message || err.message
                 throw err
