@@ -2,17 +2,19 @@
 import UserSearch from '@/components/userManagement/UserSearch.vue';
 import UserTable from '@/components/userManagement/UserTable.vue';
 import UserPagination from '@/components/userManagement/UserPagination.vue';
-import api from '@/services/api';
+import { useUserStore } from '@/stores/user.store';
 import { onMounted, ref } from 'vue';
 
 const users = ref([])
+const user = ref([])
 const page = ref(1)
 const limit = ref(10)
 const search = ref("")
+const error = ref(null)
 
-const loadUsers = async() => {
+const loadUsers = async(params) => {
     try{
-        const res = await api.get("/users", {
+        const res = await useUserStore.loadUsers({
             //tidak perlu headers:{} karena sudah di interceptors
             params: {
                 page: page.value,
@@ -31,13 +33,16 @@ const loadUsers = async() => {
         users.value = res.data.data
         return users.value
     }catch(err){
-        console.error(err.message)
+        error.value = err.message
     }
 }
 
 const searchUser = async (keywoard) => {
-    search.value = keywoard;
-    loadUsers()
+    try{
+        const res = await useUserStore.setSearch(keywoard)
+    } catch (err){
+        error.value = err.message
+    }
 }
 
 const changePage = async (val) => {
