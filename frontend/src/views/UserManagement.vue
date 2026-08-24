@@ -43,11 +43,11 @@ const changePage = async (page) => {
          </div>
 
         <UserTable v-else
-         :users="users" />
+         :users="userStore.users" />
         
         <UserPagination 
         :page="userStore.pagination.page"
-        :total_page="userStore.pagination.totalPages"
+        :totalPages="userStore.pagination.totalPages"
         @change="changePage"/>
 
     </div>
