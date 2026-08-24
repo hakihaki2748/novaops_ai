@@ -34,7 +34,7 @@ const changePage = async (page) => {
 
          <div v-else-if="userStore.error">
             {{ userStore.error }}
-            <button @click="userStore.loadUsers">
+            <button @click="userStore.loadUsers()">
                 Retry
             </button>
          </div>

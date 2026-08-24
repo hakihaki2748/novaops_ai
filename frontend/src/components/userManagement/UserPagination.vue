@@ -15,8 +15,11 @@ function changePage (val) {
 <template>
     <div class="m-1">
         <button @click="changePage(page - 1)" class="m-1 bg-blue-400 text-white p-1 px-2 rounded-sm"
-                :disabled="page === 1">prev</button>
+                :disabled="page === 1">prev
+        </button>
+        <span>Page {{ page }} of {{ totalPages }}</span>
         <button @click="changePage(page + 1)" class="m-1 bg-blue-400 text-white p-1 px-2 rounded-sm"
-                :disabled="page === totalPages">next</button>
+                :disabled="page === totalPages">next
+        </button>
     </div>
 </template>
