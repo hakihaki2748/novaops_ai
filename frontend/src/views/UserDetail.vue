@@ -29,7 +29,7 @@ const loadDetail = async () => {
     await userStore.loadLogs(route.params.id)
 }
 
-onMounted(loadDetail())
+onMounted(loadDetail)
 
 
 
