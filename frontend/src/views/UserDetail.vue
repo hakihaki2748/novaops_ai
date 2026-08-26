@@ -57,7 +57,10 @@ onMounted(async () => {
          :role="userStore.user?.role" 
          @change="changeRole"/>
 
+         
          <ActivityTimeline v-if="userStore.user"
          :logs="userStore.logs"/>
+
+         
     </div>
 </template>

@@ -32,6 +32,10 @@ const deleteUser = (id) => {
     return api.delete(`/users/${id}`)
 }
 
+const getLogs = (id) => {
+    return api.get(`/users/${id}/logs`)
+}
+
 export {
-    getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser,
+    getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser, getLogs
 }

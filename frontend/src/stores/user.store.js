@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import { getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser } from "../services/user.api"
+import { getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser, getLogs } from "../services/user.api"
 
 export const useUserStore = defineStore("user", {
     
@@ -18,7 +18,10 @@ export const useUserStore = defineStore("user", {
         loading: false,
         loadingDetail: false,
         error: null,
-        errorDetail: null
+        errorDetail: null,
+        logs: [],
+        loadingLogs: false,
+        errorLogs: null,
     }),
 
     //actions digunakan untuk menjalankan logika atau fungsi untuk mengambil nilai
@@ -65,6 +68,23 @@ export const useUserStore = defineStore("user", {
                 throw err
             }finally{
                 this.loadingDetail = false
+            }
+        },
+
+        //ambil logs
+        async loadLogs (userId) {
+            this.loadingLogs = true
+            this.errorLogs = null
+            
+            try{
+                const res = await getLogs(userId)
+                this.logs = res.data.data
+                return logs
+
+            }catch(err){
+                this.errorLogs = err.message
+            }finally{
+                this.loadingLogs = false
             }
         },
 
