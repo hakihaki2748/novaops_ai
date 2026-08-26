@@ -22,7 +22,7 @@ const changePage = async (page) => {
     await userStore.setPage(page)
 }
 
-const detail = async (id) => {
+const detailUser = async (id) => {
     await userStore.loadUser(id)
 }
 
@@ -64,7 +64,7 @@ const deleteUser = async (id) => {
          :users="userStore.users" 
          @updateRole="updateRole"
          @updateStatus="updateStatus"
-         @detail="detail"
+         @detailUser="detailUser"
          @deleteUser="deleteUser"/>
         
         <UserPagination 

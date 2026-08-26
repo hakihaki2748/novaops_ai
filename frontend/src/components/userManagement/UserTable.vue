@@ -1,11 +1,10 @@
 <script setup>
-import { updateStatus } from '@/services/user.api';
 
 const {users} = defineProps({
     users: {type: Array, default: () => []},
 })
 
-const emit = defineEmits(["updateRole", "updateStatus", "detail", "deleteUser"])
+const emit = defineEmits(["updateRole", "updateStatus", "detailUser", "deleteUser"])
 
 function detailUser (id) {
     emit("detailUser", id)
@@ -20,7 +19,7 @@ function updateStatus (id, status) {
 }
 
 function deleteUser (id) {
-    emit("delete", id)
+    emit("deleteUser", id)
 }
 
 
