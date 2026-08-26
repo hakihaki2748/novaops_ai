@@ -26,17 +26,7 @@ const changeRole = async (role) => {
 // }
 
 onMounted(async () => {
-    try{
-        userStore.loadingDetail = true
-        userStore.error = null
-
         await userStore.loadUser(route.params.id);
-        // await store.loadLogs(route.params.id);
-    }catch(err){
-        userStore.error = err.message
-    }finally{
-        userStore.loadingDetail = false
-    }
 })
 
 

@@ -17,7 +17,8 @@ export const useUserStore = defineStore("user", {
         search: "",
         loading: false,
         loadingDetail: false,
-        error: null
+        error: null,
+        errorDetail: null
     }),
 
     //actions digunakan untuk menjalankan logika atau fungsi untuk mengambil nilai
@@ -52,12 +53,12 @@ export const useUserStore = defineStore("user", {
         async loadUser (id) {
             try {
                 this.loadingDetail = true
-                this.error = null
+                this.errorDetail = null
 
                 const res = await getUserById(id);
                 this.user = res.data.data
             } catch (err) {
-                this.error = err.response?.data?.message || err.message
+                this.errorDetail = err.response?.data?.message || err.message
 
                 this.user = null
 
