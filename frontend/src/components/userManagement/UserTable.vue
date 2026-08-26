@@ -10,12 +10,12 @@ function detailUser (id) {
     emit("detailUser", id)
 }
 
-function updateRole (id, role) {
-    emit("updateRole", {id, role})
+function updateRole (id) {
+    emit("updateRole", id)
 }
 
-function updateStatus (id, status) {
-    emit("updateStatus", {id, status})
+function updateStatus (id) {
+    emit("updateStatus", id)
 }
 
 function deleteUser (id) {
