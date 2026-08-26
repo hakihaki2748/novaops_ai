@@ -20,6 +20,10 @@ const changeRole = async (role) => {
     await userStore.updateRole(route.params.id, role)
 }
 
+const retryLoad = async (id) => {
+    await userStore.loadUser(id)
+}
+
 onMounted(async () => {
         await userStore.loadUser(route.params.id);
 })
@@ -36,9 +40,9 @@ onMounted(async () => {
 
         <div v-if="userStore.errorDetail">
             <div>Error....</div>
-            <button @click="userStore.loadUser()">Retry</button>
+            <button @click="retryLoad(route.params.id)">Retry</button>
         </div>
-        <div v-if="userStore.user === null">
+        <div v-if="!userStore.loadingDetail && !userStore.errorDetail && !userStore.user">
             User Not Found
         </div>
 
