@@ -50,11 +50,11 @@ function deleteUser (id) {
                             @click="detailUser(user.id)">Detail
                         </button>
                         <button class="p-1 rounded-xs text-white cursor-pointer bg-cyan-400 hover:bg-cyan-500"
-                            @click="updateRole(user.id, user.role)">
+                            @click="updateRole(user.id)">
                             Update Role
                         </button>
                         <button class="p-1 rounded-xs text-white cursor-pointer bg-amber-500 hover:bg-amber-600"
-                            @click="updateStatus(user.id, user.status)">
+                            @click="updateStatus(user.id)">
                             Update Status
                         </button>
                         <button class="p-1 rounded-xs text-white cursor-pointer bg-red-500 hover:bg-red-600"
