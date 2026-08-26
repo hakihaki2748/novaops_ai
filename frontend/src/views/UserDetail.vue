@@ -24,14 +24,12 @@ const retryLoad = async (id) => {
     await userStore.loadUser(id)
 }
 
-const loadLogs = async (id) => {
-    
+const loadDetail = async () => {
+    await userStore.loadUser(route.params.id);
+    await userStore.loadLogs(route.params.id)
 }
 
-onMounted(async () => {
-        await userStore.loadUser(route.params.id);
-        await userStore.loadLogs(route.params.id)
-})
+onMounted(loadDetail())
 
 
 
@@ -61,10 +59,8 @@ onMounted(async () => {
         <RoleDropdown v-if="userStore.user"
         :role="userStore.user?.role" 
         @change="changeRole"/>
-
-        <button @click="loadLogs(route.params.id)">Activity</button>
         
-         <ActivityTimeline v-if="userStore.logs"
+         <ActivityTimeline
          :logs="userStore.logs"
          :loading="userStore.loadingLogs"
          :error="userStore.errorLogs"/>

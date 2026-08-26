@@ -82,7 +82,7 @@ export const useUserStore = defineStore("user", {
                 this.logs = res.data.data
 
             }catch(err){
-                this.errorLogs = err.message
+                this.errorLogs = err.response?.data?.message || err.message
             }finally{
                 this.loadingLogs = false
             }
