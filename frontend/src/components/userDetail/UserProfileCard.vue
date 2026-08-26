@@ -2,7 +2,7 @@
 const { user } = defineProps({
     user: {
         type: Object,
-        default: () => {},
+        default: () => ({}),
     }
 })
 
