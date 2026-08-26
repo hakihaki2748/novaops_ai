@@ -30,6 +30,18 @@ onMounted(async () => {
 
 <template>
     <div>
+        <div v-if="userStore.loadingDetail">
+            Loading Detail...
+        </div>
+
+        <div v-if="userStore.errorDetail">
+            <div>Error....</div>
+            <button @click="userStore.loadUser()">Retry</button>
+        </div>
+        <div v-if="userStore.user === null">
+            User Not Found
+        </div>
+
          <UserProfileCard v-if="userStore.user"
          :user="userStore.user" />
 
