@@ -21,6 +21,24 @@ const searchUser = async (keywoard) => {
 const changePage = async (page) => {
     await userStore.setPage(page)
 }
+
+const detail = async (id) => {
+    await userStore.loadUser(id)
+}
+
+const updateRole = async (id, role) => {
+    await userStore.updateRole(id, role)
+}
+
+const updateStatus = async (id, status) => {
+    await userStore.updateStatus(id, status)
+}
+
+const deleteUser = async (id) => {
+    await userStore.deleteUser(id)
+}
+
+
 </script>
 
 <template>
@@ -43,7 +61,11 @@ const changePage = async (page) => {
          </div>
 
         <UserTable v-else
-         :users="userStore.users" />
+         :users="userStore.users" 
+         @updateRole="updateRole"
+         @updateStatus="updateStatus"
+         @detail="detail"
+         @deleteUser="deleteUser"/>
         
         <UserPagination 
         :page="userStore.pagination.page"
