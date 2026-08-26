@@ -26,12 +26,12 @@ const detailUser = async (id) => {
     await userStore.loadUser(id)
 }
 
-const updateRole = async (id, role) => {
-    await userStore.updateRole(id, role)
+const updateRole = async (data) => {
+    await userStore.updateRole(data.id, data.role)
 }
 
-const updateStatus = async (id, status) => {
-    await userStore.updateStatus(id, status)
+const updateStatus = async (data) => {
+    await userStore.updateStatus(data.id, data.status)
 }
 
 const deleteUser = async (id) => {
