@@ -1,8 +1,8 @@
 <script setup>
 const { logs } = defineProps({
     logs: {
-        type: Object,
-        default: () => {},
+        type: Array,
+        default: () => [],
     }
 })
 </script>

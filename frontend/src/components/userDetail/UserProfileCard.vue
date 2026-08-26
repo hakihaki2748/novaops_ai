@@ -1,8 +1,8 @@
 <script setup>
 const { user } = defineProps({
     user: {
-        type: Object,
-        defaut: () => {},
+        type: Array,
+        default: () => [],
     }
 })
 
