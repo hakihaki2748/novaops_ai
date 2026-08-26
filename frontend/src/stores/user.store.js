@@ -75,11 +75,11 @@ export const useUserStore = defineStore("user", {
         async loadLogs (userId) {
             this.loadingLogs = true
             this.errorLogs = null
+            this.logs = []
             
             try{
                 const res = await getLogs(userId)
                 this.logs = res.data.data
-                return logs
 
             }catch(err){
                 this.errorLogs = err.message

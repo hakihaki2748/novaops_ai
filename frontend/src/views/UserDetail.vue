@@ -25,11 +25,12 @@ const retryLoad = async (id) => {
 }
 
 const loadLogs = async (id) => {
-    await userStore.loadLogs(id)
+    
 }
 
 onMounted(async () => {
         await userStore.loadUser(route.params.id);
+        await userStore.loadLogs(route.params.id)
 })
 
 
@@ -63,18 +64,10 @@ onMounted(async () => {
 
         <button @click="loadLogs(route.params.id)">Activity</button>
         
-        <div v-if="userStore.loadingLogs">
-            Loading Logs...
-        </div>
-        <div v-if="userStore.errorLogs">
-            Logs Error...
-        </div>
-        <div v-if="!userStore.loadingLogs && !userStore.errorLogs && !userStore.logs">
-            Logs Not Found
-        </div>
-
          <ActivityTimeline v-if="userStore.logs"
-         :logs="userStore.logs"/>
+         :logs="userStore.logs"
+         :loading="userStore.loadingLogs"
+         :error="userStore.errorLogs"/>
 
          
     </div>
