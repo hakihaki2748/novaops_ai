@@ -1,8 +1,8 @@
 <script setup>
 const { user } = defineProps({
     user: {
-        type: Array,
-        default: () => [],
+        type: Object,
+        default: () => {},
     }
 })
 
@@ -19,10 +19,10 @@ const { user } = defineProps({
             Status: <strong>{{ user.status }}</strong>
         </p>
         <p>
-            Status: <strong>{{ user.created_at }}</strong>
+            Created_at: <strong>{{ user.created_at }}</strong>
         </p>
         <p>
-            Status: <strong>{{ user.updated_at }}</strong>
+            Updated_at: <strong>{{ user.updated_at }}</strong>
         </p>
     </div>
 </template>

@@ -12,7 +12,7 @@ function change (e){
 
 <template>
     <div>
-         <select :value="role" @change="change()">
+         <select :value="role" @change="change">
             <option value="owner">Owner</option>
             <option value="manager">Manager</option>
             <option value="admin">Admin</option>
