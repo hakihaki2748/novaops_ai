@@ -24,6 +24,10 @@ const retryLoad = async (id) => {
     await userStore.loadUser(id)
 }
 
+const loadLogs = async (id) => {
+    await userStore.loadLogs(id)
+}
+
 onMounted(async () => {
         await userStore.loadUser(route.params.id);
 })
@@ -46,19 +50,30 @@ onMounted(async () => {
             User Not Found
         </div>
 
-         <UserProfileCard v-if="userStore.user"
-         :user="userStore.user" />
+        <UserProfileCard v-if="userStore.user"
+        :user="userStore.user" />
 
-         <StatusDropdown v-if="userStore.user"
-         :status="userStore.user?.status" 
-         @change="changeStatus"/>
+        <StatusDropdown v-if="userStore.user"
+        :status="userStore.user?.status" 
+        @change="changeStatus"/>
 
-         <RoleDropdown v-if="userStore.user"
-         :role="userStore.user?.role" 
-         @change="changeRole"/>
+        <RoleDropdown v-if="userStore.user"
+        :role="userStore.user?.role" 
+        @change="changeRole"/>
 
-         
-         <ActivityTimeline v-if="userStore.user"
+        <button @click="loadLogs(route.params.id)">Activity</button>
+        
+        <div v-if="userStore.loadingLogs">
+            Loading Logs...
+        </div>
+        <div v-if="userStore.errorLogs">
+            Logs Error...
+        </div>
+        <div v-if="!userStore.loadingLogs && !userStore.errorLogs && !userStore.logs">
+            Logs Not Found
+        </div>
+
+         <ActivityTimeline v-if="userStore.logs"
          :logs="userStore.logs"/>
 
          
