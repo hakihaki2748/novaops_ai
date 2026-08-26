@@ -18,5 +18,11 @@ const { user } = defineProps({
         <p>
             Status: <strong>{{ user.status }}</strong>
         </p>
+        <p>
+            Status: <strong>{{ user.created_at }}</strong>
+        </p>
+        <p>
+            Status: <strong>{{ user.updated_at }}</strong>
+        </p>
     </div>
 </template>
