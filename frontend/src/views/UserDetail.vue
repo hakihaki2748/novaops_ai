@@ -20,11 +20,6 @@ const changeRole = async (role) => {
     await userStore.updateRole(route.params.id, role)
 }
 
-
-// const getLogs = async () => {
-//     await userStore.loadLogs(route.params.id)
-// }
-
 onMounted(async () => {
         await userStore.loadUser(route.params.id);
 })
@@ -48,13 +43,5 @@ onMounted(async () => {
 
          <ActivityTimeline v-if="userStore.user"
          :logs="userStore.logs"/>
-
-         <!-- <button @click="showRestore = true">Restore</button>
-         <RestoreDialog
-         :show="showRestore"
-         @close="showRestore = false" /> -->
-
-         <!-- <button class="bg-blue-500 text-white p-1 m-1 rounded-sm"  
-                @click="getLogs">Refresh Logs</button> -->
     </div>
 </template>
