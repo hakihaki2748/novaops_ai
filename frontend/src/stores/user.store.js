@@ -75,8 +75,6 @@ export const useUserStore = defineStore("user", {
 
                 const res = await createUser(payload);
 
-                await this.loadUser()
-
                 await this.refreshUsers()
 
                 return res.data;
@@ -97,8 +95,6 @@ export const useUserStore = defineStore("user", {
                 this.error = null
 
                 const res = await updateStatus(id, status)
-
-                await this.loadUser()
 
                 await this.refreshUsers()
 
@@ -122,8 +118,6 @@ export const useUserStore = defineStore("user", {
 
                 const res = await updateRole(id, role)
 
-                await this.loadUser()
-
                 await this.refreshUsers()
 
                 return res.data
@@ -146,8 +140,7 @@ export const useUserStore = defineStore("user", {
 
                 const res = await deleteUser(id)
 
-                await this.loadUser()
-                 await this.refreshUsers()
+                await this.refreshUsers()
 
                 return res.data
             } catch (err) {
