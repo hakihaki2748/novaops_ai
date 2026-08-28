@@ -29,9 +29,27 @@ const getUsers = async (query, currentUser) => {
         currentRole: currentUser.role
     })
 
-    const totalPages = Math.ceil(users.length / limit)
+    const total = await userRepository.findUsers({
+        search: query.search,
+        page,
+        limit,
+        sortBy: query.sortBy,
+        sortOrder: query.sortOrder,
+        activeOnly: activeOnly,
+        currentRole: currentUser.role
+    })
 
-    return {users, totalPages};
+    const totalPages = Math.ceil(total / limit)
+
+    return { 
+        users, 
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages
+        }
+    };
 };
 
 

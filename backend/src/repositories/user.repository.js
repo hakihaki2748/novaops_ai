@@ -77,6 +77,51 @@ const findUserByEmail = async (email, connection = db) => {
     return user[0]
 }
 
+const countUsers = async ({
+    search, page, limit, sortBy, sortOrder, activeOnly, currentRole
+}) => {
+
+    let sql = `
+    SELECT COUNT(*) AS total
+    FROM users
+    WHERE 1 
+    AND deleted_at IS NULL
+    `
+    //buat variabel untuk menampung nilai params dinamis
+    const params = []
+
+    //saat search dilakukan
+    if(search){
+        sql += ` AND (name LIKE ? OR email LIKE ?)`;
+        params.push(`%${search}%`, `%${search}%`)
+    }
+
+    //hanya user yang active
+    if (activeOnly){
+        sql += ` AND status = ?`;
+        params.push("active")
+    }
+
+    //saat membuat kondisi role khusus, manager tidak boleh melihat owner
+    if (currentRole !== "owner"){
+        sql += ` AND role <> ?`;
+        params.push("owner")
+    }
+
+
+    //kita pilih filter berdasarkan apa
+    if(!allowedSort.has(sortBy)){
+        sortBy = "id"
+    }
+
+    //kita pilih urutan filternya bagaimana- apakah dari kecil ke besar atau urut sesuai alphabet
+    sortOrder = String(sortOrder)?.toUpperCase() === "DESC" ? "DESC" : "ASC"
+
+
+    const [result] = await db.execute(sql, params)
+    return result;
+}
+
 const updateStatus = async (id, status, connection ) => {
     const sql = `
     UPDATE users
