@@ -29,7 +29,7 @@ const getUsers = async (query, currentUser) => {
         currentRole: currentUser.role
     })
 
-    const total = await userRepository.findUsers({
+    const total = await userRepository.countUsers({
         search: query.search,
         page,
         limit,

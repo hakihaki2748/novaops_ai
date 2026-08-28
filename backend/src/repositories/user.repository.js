@@ -177,6 +177,7 @@ export default {
     findUserByEmail,
     findUsers,
     findUserById,
+    countUsers,
     updateStatus,
     updateRole,
     softDelete,
