@@ -29,7 +29,9 @@ const getUsers = async (query, currentUser) => {
         currentRole: currentUser.role
     })
 
-    return users;
+    const totalPages = Math.ceil(users.length / limit)
+
+    return {users, totalPages};
 };
 
 
