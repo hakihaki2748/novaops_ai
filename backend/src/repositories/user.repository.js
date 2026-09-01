@@ -109,7 +109,7 @@ const countUsers = async ({
     }
 
     const [result] = await db.execute(sql, params)
-    return result;
+    return result[0].total;
 }
 
 const updateStatus = async (id, status, connection ) => {
