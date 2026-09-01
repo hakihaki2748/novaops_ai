@@ -20,7 +20,7 @@ const createCustomer = async ({
 
 }
 
-const findUserByEmail = async (email) => {
+const findCustomerByEmail = async (email) => {
     const sql = `
     SELECT id, name, email, phone
     FROM customers
@@ -32,4 +32,5 @@ const findUserByEmail = async (email) => {
 
 export default {
     createCustomer,
+    findCustomerByEmail,
 }
