@@ -6,7 +6,7 @@ const createCustomer = async (req, res, next) => {
     const { name, email, phone } = req.body;
 
     try{
-        const result = await customerService.createUser({name, email, phone})
+        const result = await customerService.createCustomer({name, email, phone})
         return res.status(201).json(
             apiResponse.success("Data Di Tambahkan", result)
         )
