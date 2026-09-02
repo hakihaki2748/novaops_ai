@@ -68,11 +68,11 @@ const softDelete = async (req, res, next) => {
     }
 }
 
-const createUser = async (req, res, next) => {
+const createCustomer = async (req, res, next) => {
     try {
-        const result = await userService.createUser(req.body, req.user);
+        const result = await userService.createCustomer(req.body, req.user);
         return res.status(201).json(
-            apiResponse.success("User Berhasil Dibuat", result)
+            apiResponse.success("Customer Berhasil Dibuat", result)
         )
     } catch (err) {
         next(err);
