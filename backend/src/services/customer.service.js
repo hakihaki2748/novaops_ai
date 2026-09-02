@@ -15,12 +15,19 @@ const createCustomer = async ({name, email, phone}) => {
 const getCustomers = async () => {
     const getAllCustomers = await customerRepository.getCustomers();
 
-    if(getAllCustomers.length === 0) throw new AppError("Data Kosong", 404)
+    if(getAllCustomers.length === 0) {
+        throw new AppError("Data Kosong", 404)
+        return getAllCustomers
+    }
 
     return getAllCustomers
 }
 
 const getCustomerById = async (id) => {
+    //validasi id
+    if(isNaN(id)) throw new AppError("ID Harus Angka", 400)
+    
+        //cari id customer
     const customer = await customerRepository.getCustomerById(id)
 
     if(!customer) throw new AppError("User tidak Ditemukan", 400)
@@ -30,6 +37,9 @@ const getCustomerById = async (id) => {
 }
 
 const updateCustomer = async ({id, name, email, phone}) => {
+    //validasi id
+    if(isNaN(id)) throw new AppError("ID Harus Angka", 400)
+
     const customer = await customerRepository.getCustomerById(id)
 
     if(!customer) throw new AppError("User tidak Ditemukan", 404)
@@ -45,6 +55,8 @@ const updateCustomer = async ({id, name, email, phone}) => {
 }
 
 const deleteCustomer = async (id) => {
+    //validasi id
+    if(isNaN(id)) throw new AppError("ID Harus Angka", 400)
 
     const customer = await customerRepository.getCustomerById(id)
 
