@@ -44,10 +44,22 @@ const updateCustomer = async ({id, name, email, phone}) => {
     return updateCus
 }
 
+const deleteCustomer = async (id) => {
+
+    const customer = await customerRepository.getCustomerById(id)
+
+    if(!customer) throw new AppError("User tidak Ditemukan", 404)
+    
+    const deleteCus = await customerRepository.deleteCustomer(id)
+    
+    return deleteCus;
+}
+
 
 export default {
     createCustomer,
     getCustomers,
     getCustomerById,
     updateCustomer,
+    deleteCustomer
 }

@@ -53,9 +53,23 @@ const updateCustomer = async (req, res, next) => {
     }
 }
 
+const deleteCustomer = async (req, res, next) => {
+    const  id = Number(req.params.id)
+
+    try{
+        const result = await customerService.deleteCustomer(id)
+        return res.status(200).json(
+            apiResponse.success("Data Berhasil Dihapus", result)
+        )
+    }catch(err){
+        next(err)
+    }
+}
+
 export default {
     createCustomer,
     getCustomers,
     getCustomerById,
-    updateCustomer
+    updateCustomer,
+    deleteCustomer
 }

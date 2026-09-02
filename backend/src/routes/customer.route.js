@@ -7,6 +7,6 @@ router.get("/", customerController.getCustomers);
 router.get("/:id", customerController.getCustomerById);
 router.post("/", customerController.createCustomer);
 router.patch("/:id", customerController.updateCustomer);
-// router.delete("/:id", customerController.deleteCustomer);
+router.delete("/:id", customerController.deleteCustomer);
 
 export default router;
