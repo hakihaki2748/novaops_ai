@@ -60,7 +60,7 @@ const updateCustomer = async ({id, name, email, phone}) => {
     where id = ?
     AND deleted_at IS NULL
     `
-    const [result] = await db.execute(sql, [id, name, email, phone])
+    const [result] = await db.execute(sql, [ name, email, phone, id])
 
     return result
 }
