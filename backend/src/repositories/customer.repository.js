@@ -48,7 +48,7 @@ const getCustomerById = async (id) => {
         FROM customers
         WHERE id = ?
     `
-    const rows = await db.execute(sql, [id])
+    const [rows] = await db.execute(sql, [id])
     return rows[0]
 }
 
