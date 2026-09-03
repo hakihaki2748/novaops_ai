@@ -9,7 +9,7 @@ import createCustomerSchema from "../validations/schemas/createCustomer.schema.j
 router.get("/", customerController.getCustomers);
 router.get("/:id", customerController.getCustomerById);
 router.post("/", validate(createCustomerSchema), customerController.createCustomer);
-router.patch("/:id", customerController.updateCustomer);
+router.patch("/:id",validate(createCustomerSchema), customerController.updateCustomer);
 router.delete("/:id", customerController.deleteCustomer);
 
 export default router;
