@@ -48,7 +48,7 @@ const updateCustomer = async ({id, name, email, phone}) => {
 
     const customer = await customerRepository.getCustomerById(id)
 
-    if(!customer) throw new AppError("User tidak Ditemukan", 404)
+    if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
     
     const updateCus = await customerRepository.updateCustomer({
         id: Number(id),
