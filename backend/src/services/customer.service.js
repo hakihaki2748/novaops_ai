@@ -67,6 +67,8 @@ const deleteCustomer = async (id) => {
 
     if(!customer) throw new AppError("User tidak Ditemukan", 404)
     
+    if(customer.deleted_at !== null) throw new AppError("User Sudah Dihapus", 400)
+    
     const deleteCus = await customerRepository.deleteCustomer(id)
     
     return deleteCus;

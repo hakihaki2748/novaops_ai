@@ -45,7 +45,7 @@ const updateCustomer = async (req, res, next) => {
     const { name, email, phone } = req.body
     try{
         const result = await customerService.updateCustomer({id, name, email, phone})
-        return res.status(201).json(
+        return res.status(200).json(
             apiResponse.success("Update Berhasil", result)
         )
     }catch(err){

@@ -44,10 +44,9 @@ const getCustomers = async () => {
 
 const getCustomerById = async (id) => {
     const sql = `
-        SELECT id, name, email, phone 
+        SELECT id, name, email, phone, created_at, updated_at, deleted_at 
         FROM customers
         WHERE id = ?
-        AND deleted_at IS NULL
     `
     const rows = await db.execute(sql, [id])
     return rows[0]
