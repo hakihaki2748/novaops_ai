@@ -61,7 +61,7 @@ const getCustomerById = async (id) => {
 const updateCustomer = async ({id, name, email, phone}) => { 
     const sql = `
         UPDATE customers
-        SET name = ?, email = ?, phone = ?
+        SET name = ?, email = ?, phone = ?, updated_at = NOW()
         where id = ?
         AND deleted_at IS NULL
     `
