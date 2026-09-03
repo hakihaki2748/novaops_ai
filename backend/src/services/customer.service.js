@@ -1,6 +1,7 @@
 //import repository
 import customerRepository from "../repositories/customer.repository.js"
 import AppError from "../utils/AppError.js"
+import validateIdSchema from "../validations/vaildateId.js"
 
 const createCustomer = async ({name, email, phone}) => {
     //cari email apakah sudah digunakan
@@ -25,12 +26,13 @@ const getCustomers = async () => {
 
 const getCustomerById = async (id) => {
     //validasi id
-    if(isNaN(id) || Number(id) <= 0) throw new AppError("ID Harus Angka > 0", 400)
-    
-        //cari id customer
+    const validateId = validateIdSchema.safeParse({id})
+    if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
+
+    //cari id customer
     const customer = await customerRepository.getCustomerById(id)
 
-    if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 400)
+    if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
 
     return customer;
 
@@ -38,7 +40,8 @@ const getCustomerById = async (id) => {
 
 const updateCustomer = async ({id, name, email, phone}) => {
     //validasi id
-    if(isNaN(id) || Number(id) <= 0) throw new AppError("ID Harus Angka > 0", 400)
+    const validateId = validateIdSchema.safeParse({id})
+    if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
 
     //cek email apakah sudah digunakan oleh customer lain
     const findEmail = await customerRepository.findCustomerByEmail(email)
@@ -62,13 +65,14 @@ const updateCustomer = async ({id, name, email, phone}) => {
 
 const deleteCustomer = async (id) => {
     //validasi id
-    if(isNaN(id) || Number(id) <= 0) throw new AppError("ID Harus Angka > 0", 400)
+    const validateId = validateIdSchema.safeParse({id})
+    if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
 
     const customer = await customerRepository.getCustomerById(id)
 
     if(!customer) throw new AppError("Customer tidak Ditemukan", 404)
     
-    if(customer.deleted_at !== null) throw new AppError("Customer Sudah Dihapus", 400)
+    if(customer.deleted_at !== null) throw new AppError("Customer Sudah Dihapus", 404)
     
     const deleteCus = await customerRepository.deleteCustomer(id)
     
