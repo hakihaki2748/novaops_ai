@@ -1,5 +1,6 @@
 //import database
 import db from "../config/database.js"
+import AppError  from "../utils/AppError.js"
 
 const createCustomer = async ({
     name, email, phone
@@ -9,15 +10,20 @@ const createCustomer = async ({
     INSERT INTO customers(name, email, phone)
     VALUES (?, ?, ?)
     `
+    try{
+        const [result] = await db.execute(sql, [
+            name,
+            email,
+            phone
+        ])
 
-    const [result] = await db.execute(sql, [
-        name,
-        email,
-        phone
-    ])
+        return result.insertId;
 
-    return result.insertId;
-
+    }catch(err){
+        if(err.code === "ER_DUP_ENTRY") throw new AppError("Email Sudah Digunakan", 400)
+        throw err;
+    }
+    
 }
 
 const findCustomerByEmail = async (email) => {
@@ -59,9 +65,20 @@ const updateCustomer = async ({id, name, email, phone}) => {
         where id = ?
         AND deleted_at IS NULL
     `
-    const [result] = await db.execute(sql, [ name, email, phone, id])
+    try{
+        const [result] = await db.execute(sql, [ 
+            name, 
+            email, 
+            phone, 
+            id
+        ])
 
-    return result
+        return result
+    }catch(err){
+        if(err.code === "ER_DUP_ENTRY") throw new AppError("Email Sudah Digunakan", 400)
+        throw err;
+    }
+    
 }
 
 
@@ -69,7 +86,8 @@ const deleteCustomer = async (id) => {
     const sql = `
         UPDATE customers
         SET deleted_at = NOW()
-        WHERE id = ? 
+        WHERE id = ?
+        AND deleted_at IS NULL
     `
 
     const [result] = await db.execute(sql, [id])
