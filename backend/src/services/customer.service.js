@@ -25,7 +25,7 @@ const getCustomers = async () => {
 
 const getCustomerById = async (id) => {
     //validasi id
-    if(isNaN(id)) throw new AppError("ID Harus Angka", 400)
+    if(isNaN(id) || Number(id) <= 0) throw new AppError("ID Harus Angka > 0", 400)
     
         //cari id customer
     const customer = await customerRepository.getCustomerById(id)
@@ -38,7 +38,7 @@ const getCustomerById = async (id) => {
 
 const updateCustomer = async ({id, name, email, phone}) => {
     //validasi id
-    if(isNaN(id)) throw new AppError("ID Harus Angka", 400)
+    if(isNaN(id) || Number(id) <= 0) throw new AppError("ID Harus Angka > 0", 400)
 
     //cek email apakah sudah digunakan oleh customer lain
     const findEmail = await customerRepository.findCustomerByEmail(email)
@@ -62,7 +62,7 @@ const updateCustomer = async ({id, name, email, phone}) => {
 
 const deleteCustomer = async (id) => {
     //validasi id
-    if(isNaN(id)) throw new AppError("ID Harus Angka", 400)
+    if(isNaN(id) || Number(id) <= 0) throw new AppError("ID Harus Angka > 0", 400)
 
     const customer = await customerRepository.getCustomerById(id)
 
