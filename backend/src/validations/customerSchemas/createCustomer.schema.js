@@ -17,7 +17,7 @@ const createCustomerSchema = z.object({
     .trim()
     .min(10, "nomer telepon minimal 10 karakter")
     .max(20, "nomer telepon maksimal 20 karakter")
-    .regex(/^[0-9+]+$/, "nomer telepon tidak valid")
+    .regex(/^\+[0-9]+$/, "nomer telepon tidak valid")
 }).strict();
 
 export default createCustomerSchema;
