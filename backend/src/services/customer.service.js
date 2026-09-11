@@ -21,7 +21,12 @@ const getCustomers = async () => {
         return getAllCustomers
     }
 
-    return getAllCustomers
+    //karena kita ingin merubah nilai is_vip menjadi boolean, maka kita lakukan maping
+
+    return getAllCustomers.map(customers => ({
+        ...customers,
+        is_vip: Boolean(customers.is_vip)
+    }))
 }
 
 const getCustomerById = async (id) => {
@@ -63,6 +68,115 @@ const updateCustomer = async ({id, name, email, phone}) => {
     return updateCus
 }
 
+//update customer vip
+const updateCustomerVip = async ({id, isVip}) => {
+    //validasi id
+    const validateId = validateIdSchema.safeParse({id})
+
+    if(!validateId.success){
+        throw new AppError(
+            validateId.error.errors[0].message,
+            400
+        )
+    }
+
+    const customer = await customersRepository.getCustomerById(id)
+
+    if (!customer || customer.deleted_at !== null){
+        throw new AppError(
+            "Customer tidak Ditemukan",
+            404
+        )
+    }
+
+    const updateCus = await customerRepository.updateCustomerVip({
+        id: Number(id),
+        isVip: isVip
+    })
+    
+    if(updateCus.affectedRows === 0){
+        throw new AppError(
+            "Gagal Update Status VIP Customer",
+            400
+        )
+    }
+    
+    return {
+        id: Number(id),
+        isVip
+    }
+}
+
+//untuk update segment customer
+const updateCustomerSegment = async ({id, segment}) => {
+    //validasi id
+    const validateId = validateIdSchema.safeParse({id})
+
+    if(!validateId.success){
+        throw new AppError(
+            validateId.error.errors[0].message,
+            400
+        )
+    }
+    
+    const customer = await customersRepository.getCustomerById(id)
+
+    if(!customer || customer.deleted_at !== null){
+        throw new AppError(
+            "Customer tidak Ditemukan",
+            404
+        )
+    }
+    
+    const updateCus = await customerRepository.updateCustomerSegment({
+        id: Number(id),
+        segment
+    })
+
+    if(updateCus.affectedRows === 0){
+        throw new AppError(
+            "Gagal Update Segment Customer",
+            400
+        )
+    }
+
+    return {
+        id: Number(id),
+        segment
+    }
+}
+
+
+//untuk update status customer
+const updateCustomerStatus = async ({id, status}) => {
+    //validasi id
+    const validateId = validationIdSchema.safeParse({id})
+
+    if(!customer || customer.deleted_at !== null){
+        throw new AppError(
+            "Customer tidak Ditemukan",
+            404
+        )
+    }
+
+    const updateCus = await customerRepository.updateCustomerStatus({
+        id: Number(id),
+        status
+    })
+
+    if(updateCus.affectedRows === 0){
+        throw new AppError(
+            "Gagal Update Status Customer",
+            400
+        )
+    }
+
+    return {
+        id: Number(id),
+        status
+    }
+}
+
 const deleteCustomer = async (id) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
@@ -85,5 +199,8 @@ export default {
     getCustomers,
     getCustomerById,
     updateCustomer,
+    updateCustomerVip,
+    updateCustomerStatus,
+    updateCustomerSegment,
     deleteCustomer
 }

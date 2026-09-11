@@ -39,7 +39,7 @@ const findCustomerByEmail = async (email) => {
 
 const getCustomers = async () => {
     const sql = `
-        SELECT id, name, email, phone 
+        SELECT id, name, email, phone, is_vip, segment, status 
         FROM customers
         WHERE deleted_at IS NULL
     `
@@ -50,7 +50,7 @@ const getCustomers = async () => {
 
 const getCustomerById = async (id) => {
     const sql = `
-        SELECT id, name, email, phone, created_at, updated_at, deleted_at 
+        SELECT id, name, email, phone, is_vip, segment, status, created_at, updated_at, deleted_at 
         FROM customers
         WHERE id = ?
     `
@@ -82,6 +82,47 @@ const updateCustomer = async ({id, name, email, phone}) => {
 }
 
 
+// untuk update vip customer
+const updateCustomerVip = async ({id, isVip}) => {
+    const sql = `
+        UPDATE customers
+        SET is_vip = ?, updated_at = now()
+        WHERE id = ?
+        AND deleted_at = NULL
+    `
+
+    const [result] = await db.execute(sql, [isVip, id])
+    return result;
+}
+
+//untuk update segment customer
+const updateCustomerSegment = async ({id, segment}) => {
+    const sql = `
+        UPDATE customers
+        SET segment = ?, updated_at = now()
+        WHERE id = ?
+        AND deleted_at = NULL
+        `
+
+        const [result] = await db.execute(sql, [segment, id])
+        return result
+}
+
+
+//untuk update status customer
+const updateCustomerStatus = async ({id, status}) => {
+    const sql = `
+        UPDATE customers
+        SET status = ? , updated_at = now()
+        WHERE id = ?
+        AND deleted_at = NULL 
+        `
+
+        const [result] = await db.execute(sql, [status, id])
+        return result
+}
+
+
 const deleteCustomer = async (id) => {
     const sql = `
         UPDATE customers
@@ -101,5 +142,8 @@ export default {
     getCustomers,
     getCustomerById,
     updateCustomer,
+    updateCustomerVip,
+    updateCustomerSegment,
+    updateCustomerStatus,
     deleteCustomer
 }

@@ -41,12 +41,60 @@ const getCustomerById = async (req, res, next) =>{
 
 
 const updateCustomer = async (req, res, next) => {
-    const id = req.params.id
+    const id = Number(req.params.id)
     const { name, email, phone } = req.body
     try{
         const result = await customerService.updateCustomer({id, name, email, phone})
         return res.status(200).json(
             apiResponse.success("Update Berhasil", result)
+        )
+    }catch(err){
+        next(err)
+    }
+}
+
+
+//update customer vip
+const updateCustomerVip = async (req, res, next) => {
+    const id = Number(req.params.id)
+    const {isVip} = req.body
+
+    try{
+        const result = await customerService.updateCustomerVip({id, isVip})
+        return res.status(200).json(
+            apiResponse.success("Update Status VIP Berhasil", result)
+        )
+    }catch(err){
+        next(err)
+    }
+}
+
+//update customer segment
+const updateCustomerSegment = async (req, res, next) => {
+    const id = Number(req.params.id)
+    const {segment} = req.body
+
+    try{
+        const result = await customerService.updateCustomerSegment({id, segment})
+        return res.status(200).json(
+            apiResponse.success("Update Segment Customer Berhasil", result)
+        )
+
+    }catch(err){
+        next(err)
+    }
+}
+
+
+//untuk update status customer
+const updateCustomerStatus = async (req, res, next) => {
+    const id = Number(req.params.id)
+    const {status} = req.body
+
+    try{
+        const result = await customerService.updateCustomerStatus({id, status})
+        return res.status(200).json(
+            apiResponse.success("Update Status Customer Berhasil", result)
         )
     }catch(err){
         next(err)
@@ -71,5 +119,8 @@ export default {
     getCustomers,
     getCustomerById,
     updateCustomer,
+    updateCustomerVip,
+    updateCustomerSegment,
+    updateCustomerStatus,
     deleteCustomer
 }
