@@ -36,18 +36,6 @@ const findCustomerByEmail = async (email) => {
     return rows;
 }
 
-
-const getCustomers = async () => {
-    const sql = `
-        SELECT id, name, email, phone, is_vip, segment, status 
-        FROM customers
-        WHERE deleted_at IS NULL
-    `
-
-    const [rows] = await db.execute(sql)
-    return rows
-}
-
 const getCustomerById = async (id) => {
     const sql = `
         SELECT id, name, email, phone, is_vip, segment, status, created_at, updated_at, deleted_at 
@@ -57,6 +45,68 @@ const getCustomerById = async (id) => {
     const [rows] = await db.execute(sql, [id])
     return rows[0]
 }
+
+//ini untuk sort,filter dan search
+const findCustomers = async ({ search, status, segment, isVip, sort, order}) => {
+
+    let sql = `
+        SELECT
+            id,
+            name,
+            email,
+            phone,
+            is_vip,
+            segment,
+            status,
+            created_at,
+            updated_at
+        FROM customers
+        WHERE deleted_at IS NULL
+    `;
+
+    const params = [];
+
+    if (search) {
+        sql += `
+            AND (
+                name LIKE ?
+                OR email LIKE ?
+                OR phone LIKE ?
+            )
+        `;
+
+        const searchValue = `%${search}%`;
+
+        params.push(
+            searchValue,
+            searchValue,
+            searchValue
+        );
+    }
+
+    if (status) {
+        sql += ` AND status = ? `;
+        params.push(status);
+    }
+
+    if (segment) {
+        sql += ` AND segment = ? `;
+        params.push(segment);
+    }
+
+    if (isVip !== undefined) {
+        sql += ` AND is_vip = ? `;
+        params.push(isVip);
+    }
+
+    sql += ` ORDER BY ${sort} ${order} `;
+
+    const [rows] = await db.execute(sql, params);
+
+    return rows;
+};
+
+
 
 const updateCustomer = async ({id, name, email, phone}) => { 
     const sql = `
@@ -140,8 +190,8 @@ const deleteCustomer = async (id) => {
 export default {
     createCustomer,
     findCustomerByEmail,
-    getCustomers,
     getCustomerById,
+    findCustomers,
     updateCustomer,
     updateCustomerVip,
     updateCustomerSegment,

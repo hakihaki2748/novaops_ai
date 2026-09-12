@@ -15,17 +15,6 @@ const createCustomer = async (req, res, next) => {
     }
 }
 
-const getCustomers = async (req, res, next) => {
-    try{
-        const result = await customerService.getCustomers()
-        return res.status(200).json(
-            apiResponse.success("Data Ditemukan", result)
-        )
-    }catch(err){
-        next(err)
-    }
-}
-
 const getCustomerById = async (req, res, next) =>{
     try{
         const id = Number(req.params.id)
@@ -47,6 +36,18 @@ const updateCustomer = async (req, res, next) => {
         const result = await customerService.updateCustomer({id, name, email, phone})
         return res.status(200).json(
             apiResponse.success("Update Berhasil", result)
+        )
+    }catch(err){
+        next(err)
+    }
+}
+
+const findCustomers = async (req, res, next) => {
+    try{
+        const result = await customerService.findCustomers(req.validQuery);
+
+        return res.status(200).json(
+            apiResponse.success("Data Customer Dambil", result)
         )
     }catch(err){
         next(err)
@@ -116,8 +117,8 @@ const deleteCustomer = async (req, res, next) => {
 
 export default {
     createCustomer,
-    getCustomers,
     getCustomerById,
+    findCustomers,
     updateCustomer,
     updateCustomerVip,
     updateCustomerSegment,

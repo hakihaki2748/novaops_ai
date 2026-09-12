@@ -13,22 +13,6 @@ const createCustomer = async ({name, email, phone}) => {
     return newCustomer
 }
 
-const getCustomers = async () => {
-    const getAllCustomers = await customerRepository.getCustomers();
-
-    if(getAllCustomers.length === 0) {
-        throw new AppError("Data Kosong", 404)
-        return getAllCustomers
-    }
-
-    //karena kita ingin merubah nilai is_vip menjadi boolean, maka kita lakukan maping
-
-    return getAllCustomers.map(customers => ({
-        ...customers,
-        is_vip: Boolean(customers.is_vip)
-    }))
-}
-
 const getCustomerById = async (id) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
@@ -44,6 +28,24 @@ const getCustomerById = async (id) => {
     return customer;
 
 }
+
+//digunakan saat query parameter aktif untuk search,sort atau filter
+const findCustomers = async ({search, status, segment, is_vip, sort, order}) => {
+    const isVip = is_vip === "true" ? true : is_vip === "false" ? false : undefined;
+
+    const findAllCustomers = await customerRepository.findCustomers({
+        search,
+        status,
+        segment,
+        isVip,
+        sort,
+        order
+    })
+    if(findAllCustomers.length === 0) throw new AppError("Data Tidak Ditemukan", 404)
+    return findAllCustomers
+}
+
+
 
 const updateCustomer = async ({id, name, email, phone}) => {
     //validasi id
@@ -202,8 +204,8 @@ const deleteCustomer = async (id) => {
 
 export default {
     createCustomer,
-    getCustomers,
     getCustomerById,
+    findCustomers,
     updateCustomer,
     updateCustomerVip,
     updateCustomerStatus,
