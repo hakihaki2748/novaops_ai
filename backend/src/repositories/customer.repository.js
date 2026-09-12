@@ -88,12 +88,13 @@ const updateCustomerVip = async ({id, isVip}) => {
         UPDATE customers
         SET is_vip = ?, updated_at = now()
         WHERE id = ?
-        AND deleted_at = NULL
+        AND deleted_at IS NULL
     `
 
     const [result] = await db.execute(sql, [isVip, id])
     return result;
 }
+
 
 //untuk update segment customer
 const updateCustomerSegment = async ({id, segment}) => {
@@ -101,7 +102,7 @@ const updateCustomerSegment = async ({id, segment}) => {
         UPDATE customers
         SET segment = ?, updated_at = now()
         WHERE id = ?
-        AND deleted_at = NULL
+        AND deleted_at IS NULL
         `
 
         const [result] = await db.execute(sql, [segment, id])
@@ -115,7 +116,7 @@ const updateCustomerStatus = async ({id, status}) => {
         UPDATE customers
         SET status = ? , updated_at = now()
         WHERE id = ?
-        AND deleted_at = NULL 
+        AND deleted_at IS NULL 
         `
 
         const [result] = await db.execute(sql, [status, id])

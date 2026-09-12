@@ -39,6 +39,8 @@ const getCustomerById = async (id) => {
 
     if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
 
+    //rubah nilai is_vip menjadi boolean
+    customer.is_vip = Boolean(customer.is_vip)
     return customer;
 
 }
@@ -50,10 +52,12 @@ const updateCustomer = async ({id, name, email, phone}) => {
 
     //cek email apakah sudah digunakan oleh customer lain
     const findEmail = await customerRepository.findCustomerByEmail(email)
-
+    console.log(findEmail)
     //juka email ditemukan, dan id tidak sama dengan idUpdate maka gagal
     if(findEmail.length !== 0 && findEmail[0].id !== Number(id)) throw new AppError("Email Sudah Digunakan", 400)
-
+    
+    //cek email findEmail apakah emailnya sama
+    if(findEmail[0].email === email) throw new AppError("Email Sudah Digunakan", 400)
     const customer = await customerRepository.getCustomerById(id)
 
     if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
@@ -80,7 +84,7 @@ const updateCustomerVip = async ({id, isVip}) => {
         )
     }
 
-    const customer = await customersRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id)
 
     if (!customer || customer.deleted_at !== null){
         throw new AppError(
@@ -91,7 +95,7 @@ const updateCustomerVip = async ({id, isVip}) => {
 
     const updateCus = await customerRepository.updateCustomerVip({
         id: Number(id),
-        isVip: isVip
+        isVip
     })
     
     if(updateCus.affectedRows === 0){
@@ -119,7 +123,7 @@ const updateCustomerSegment = async ({id, segment}) => {
         )
     }
     
-    const customer = await customersRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id)
 
     if(!customer || customer.deleted_at !== null){
         throw new AppError(
@@ -150,7 +154,9 @@ const updateCustomerSegment = async ({id, segment}) => {
 //untuk update status customer
 const updateCustomerStatus = async ({id, status}) => {
     //validasi id
-    const validateId = validationIdSchema.safeParse({id})
+    const validateId = validateIdSchema.safeParse({id})
+
+    const customer = await customerRepository.getCustomerById(id)
 
     if(!customer || customer.deleted_at !== null){
         throw new AppError(
