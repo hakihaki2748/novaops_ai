@@ -1,4 +1,5 @@
 //import repository
+import { boolean } from "zod"
 import customerRepository from "../repositories/customer.repository.js"
 import AppError from "../utils/AppError.js"
 import validateIdSchema from "../validations/vaildateId.js"
@@ -30,19 +31,47 @@ const getCustomerById = async (id) => {
 }
 
 //digunakan saat query parameter aktif untuk search,sort atau filter
-const findCustomers = async ({search, status, segment, is_vip, sort, order}) => {
+const findCustomers = async ({search, status, segment, is_vip, sort, order, page, limit}) => {
     const isVip = is_vip === "true" ? true : is_vip === "false" ? false : undefined;
+    
+    const currentPage = Number(page) || 1
+    const perLimit = Number(limit) || 10
+    const offset = (Number(currentPage) - 1) * Number(perLimit)
 
-    const findAllCustomers = await customerRepository.findCustomers({
-        search,
-        status,
-        segment,
-        isVip,
-        sort,
-        order
-    })
+    const [findAllCustomers, totalCustomer] = await Promise.all([
+        customerRepository.findCustomers({
+            search,
+            status,
+            segment,
+            isVip,
+            sort,
+            order,
+            limit: perLimit,
+            offset: offset
+        }),
+        customerRepository.countCustomers({search, status, segment, isVip})
+    ])
+    const customers = findAllCustomers.map(customer => ({
+        ...customer,
+        is_vip: Boolean(customer.is_vip)
+    }))
+    console.log(findAllCustomers)
+    const totalPages = totalCustomer === 0 ? 0 : Math.ceil(totalCustomer / limit)
+
     if(findAllCustomers.length === 0) throw new AppError("Data Tidak Ditemukan", 404)
-    return findAllCustomers
+    
+    return {
+        customers,
+        pagination : {
+            page,
+            limit,
+            totalCustomer,
+            totalPages
+
+        }
+    }
+
+
 }
 
 
@@ -200,6 +229,7 @@ const deleteCustomer = async (id) => {
     
     return deleteCus;
 }
+
 
 
 export default {

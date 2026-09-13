@@ -46,8 +46,8 @@ const getCustomerById = async (id) => {
     return rows[0]
 }
 
-//ini untuk sort,filter dan search
-const findCustomers = async ({ search, status, segment, isVip, sort, order}) => {
+//ini untuk sort,filter,search dan pagination
+const findCustomers = async ({ search, status, segment, isVip, sort, order, limit, offset}) => {
 
     let sql = `
         SELECT
@@ -65,7 +65,8 @@ const findCustomers = async ({ search, status, segment, isVip, sort, order}) => 
     `;
 
     const params = [];
-
+    const safelimit = Number.isInteger(Number(limit)) ? Number(limit) : 10
+    const safeOffset = Number.isInteger(Number(offset)) ? Number(offset) : 0
     if (search) {
         sql += `
             AND (
@@ -85,21 +86,31 @@ const findCustomers = async ({ search, status, segment, isVip, sort, order}) => 
     }
 
     if (status) {
-        sql += ` AND status = ? `;
+        sql += ` 
+            AND status = ?
+        `;
         params.push(status);
     }
 
     if (segment) {
-        sql += ` AND segment = ? `;
+        sql += ` 
+            AND segment = ?
+        `;
         params.push(segment);
     }
 
     if (isVip !== undefined) {
-        sql += ` AND is_vip = ? `;
+        sql += `
+            AND is_vip = ?
+        `;
         params.push(isVip);
     }
 
-    sql += ` ORDER BY ${sort} ${order} `;
+    sql += `
+        ORDER BY ${sort} ${order} 
+        LIMIT ${safelimit} OFFSET ${safeOffset}
+    `;
+    // params.push(limit, offset)
 
     const [rows] = await db.execute(sql, params);
 
@@ -186,6 +197,59 @@ const deleteCustomer = async (id) => {
     return result;
 }
 
+//untuk menghitung total data yang ditampilkan
+const countCustomers = async ({search, status, segment, isVip}) => {
+    let sql = `
+        SELECT COUNT(*) AS total
+        FROM customers
+        WHERE deleted_at IS NULL
+    `;
+    
+    //untuk menampung nilai
+    const params = [];
+
+    if(search){
+        sql += `
+            AND (
+                name LIKE ? OR
+                email LIKE ? OR
+                phone LIKE ?
+            )
+        `;
+
+        const searchValue = `$%{search}%`
+
+        params.push(searchValue, searchValue, searchValue)
+    }
+
+    //jika status
+    if(status){
+        sql += `
+            AND status = ?
+        `
+        params.push(status);
+    }
+
+    //jika segment yg dicari
+    if(segment){
+        sql += `
+            AND segment = ?
+        `
+        params.push(segment)
+    }
+
+    //jika berdasarkan vip
+    if(isVip !== undefined){
+        sql += `
+            AND is_vip = ?
+        `
+
+        params.push(isVip)
+    }
+
+    const [rows] = await db.execute(sql, params)
+    return Number(rows[0].total)
+}
 
 export default {
     createCustomer,
@@ -196,5 +260,6 @@ export default {
     updateCustomerVip,
     updateCustomerSegment,
     updateCustomerStatus,
-    deleteCustomer
+    deleteCustomer,
+    countCustomers
 }
