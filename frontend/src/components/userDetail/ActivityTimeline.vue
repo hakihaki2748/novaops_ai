@@ -18,7 +18,7 @@ const { logs, loading, error } = defineProps({
 </script>
 
 <template>
-    <div>
+    <div class="m-4 border border-amber-200">
         <h3>Activity Timeline</h3>
         <div v-if="loading">
             Loading Logs...

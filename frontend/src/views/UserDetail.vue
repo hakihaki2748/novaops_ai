@@ -36,7 +36,7 @@ onMounted(loadDetail)
 </script>
 
 <template>
-    <div>
+    <div class="p-2">
         <div v-if="userStore.loadingDetail">
             Loading Detail...
         </div>
@@ -65,6 +65,8 @@ onMounted(loadDetail)
          :loading="userStore.loadingLogs"
          :error="userStore.errorLogs"/>
 
-         
+         <routerLink :to="{name: 'users'}"
+                     class="p-2 rounded-xs text-white bg-blue-400">Back
+         </routerLink>
     </div>
 </template>

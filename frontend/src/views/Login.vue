@@ -24,7 +24,7 @@ const login = async ()=> {
     console.log(response.data)
     console.log(response.data.success)
 
-    router.push('/users/2')
+    router.push('/users')
   } catch(err){
     console.log(err.response?.data);
     console.log(err.response?.data?.status);

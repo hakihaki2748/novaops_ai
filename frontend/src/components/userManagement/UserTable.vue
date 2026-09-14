@@ -46,21 +46,21 @@ function deleteUser (id) {
                     <td class="border p-1">{{ user.role }}</td>
                     <td class="border p-1">{{ user.status }}</td>
                     <td v-if="users.length">
-                        <button class="p-1 rounded-xs text-white cursor-pointer bg-blue-400 hover:bg-blue-500"
-                            @click="detailUser(user.id)">Detail
-                        </button>
-                        <button class="p-1 rounded-xs text-white cursor-pointer bg-cyan-400 hover:bg-cyan-500"
-                            @click="updateRole(user.id)">
+                        <routerLink :to="{name: 'user_detail', params: {id: user.id}}" class="p-1 rounded-xs text-white cursor-pointer bg-blue-400 hover:bg-blue-500"
+                            >Detail
+                        </routerLink>
+                        <routerLink :to="{name: 'user_detail', params: {id: user.id}}" class="p-1 rounded-xs text-white cursor-pointer bg-cyan-400 hover:bg-cyan-500"
+                           >
                             Update Role
-                        </button>
-                        <button class="p-1 rounded-xs text-white cursor-pointer bg-amber-500 hover:bg-amber-600"
-                            @click="updateStatus(user.id)">
+                        </routerLink>
+                        <routerLink :to="{name: 'user_detail', params: {id: user.id}}" class="p-1 rounded-xs text-white cursor-pointer bg-amber-500 hover:bg-amber-600"
+                            >
                             Update Status
-                        </button>
-                        <button class="p-1 rounded-xs text-white cursor-pointer bg-red-500 hover:bg-red-600"
-                            @click="deleteUser(user.id)">
+                        </routerLink>
+                        <routerLink :to="{name: 'user_detail', params: {id: user.id}}" class="p-1 rounded-xs text-white cursor-pointer bg-red-500 hover:bg-red-600"
+                            >
                             Delete
-                        </button>
+                        </routerLink>
                     </td>
                 </tr>               
             </tbody>

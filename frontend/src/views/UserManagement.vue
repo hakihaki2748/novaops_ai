@@ -9,9 +9,6 @@ const userStore = useUserStore();
 
 
 
-onMounted(async () => {
-    await userStore.loadUsers()
-})
 
 
 const searchUser = async (keywoard) => {
@@ -37,6 +34,10 @@ const updateStatus = async (id) => {
 const deleteUser = async (id) => {
     await userStore.deleteUser(id)
 }
+
+onMounted(async () => {
+    await userStore.loadUsers()
+})
 
 
 </script>
