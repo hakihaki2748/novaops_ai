@@ -16,7 +16,7 @@ const customerQuerySchema = z.object({
         .enum(CUSTOMER_STATUSES)
         .optional(),
     is_vip: z
-        .enum(["true", "false"])
+        .enum(["true", "false", ""])
         .optional(),
     sort: z
         .enum(["id", "name", "email", "created_at", "updated_at"])

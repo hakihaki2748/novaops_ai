@@ -1,6 +1,7 @@
 //aturan bisnis untuk nilai segmen dan status pelanggan
 
 const CUSTOMER_SEGMENTS = [
+    "",
     "retail",
     "startup",
     "enterprise",
@@ -8,6 +9,7 @@ const CUSTOMER_SEGMENTS = [
 ];
 
 const CUSTOMER_STATUSES = [
+    "",
     "active",
     "inactive",
     "suspended"
