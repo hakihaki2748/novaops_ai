@@ -133,7 +133,94 @@ export const useCustomerStore = defineStore("customer", {
 
                 await this.loadCustomers()
 
-                const result = res.data.data
+                return res.data
+            }catch(err){
+                this.error = err.response?.data?.message || err.message
+                throw err
+            }finally{
+                this.loading = false
+            }
+        },
+
+        async updateCustomer(id, payload) {
+            try{
+                this.loading = true
+                this.error = null
+                
+                const res = await updateCustomer(id, payload)
+                await this.loadCustomer()
+
+                return res.data
+
+            }catch(err){
+                this.error = err.response?.data?.message || err.message
+                throw err
+            }finally{
+                this.loading = false
+            }
+        },
+
+        async updateCustomerVip (id, isVip) {
+            try{
+                this.loading = true
+                this.error = null
+
+                const res = await updateCustomerVip(id, isVip)
+                await this.loadCustomer()
+
+                return res.data
+            }catch(err){
+                this.error = err.response?.data?.message || err.message
+                throw err
+            }finally{
+                this.loading = false
+            }   
+        },
+
+        async updateCustomerSegment(id, segment) {
+            try{
+                this.loading = true
+                this.error = null
+
+                const res = await updateCustomerSegment(id, segment)
+                
+                await this.loadCustomer()
+
+                return res.data
+            }catch(err){
+                this.error = err.response?.data?.message || err.message
+                throw err
+            }finally{
+                this.loading = false
+            }
+        },
+
+        async updateCustomerStatus (id, status) {
+            try{
+                this.loading = true
+                this.error = null
+
+                const res = await updateCustomerStatus(id, status)
+                await this.loadCustomer()
+
+                return res.data
+            }catch(err){
+                this.error = err.response?.data?.message || err.message
+                throw err
+            }finally{
+                this.loading = false
+            }
+        },
+
+        async deleteCustomer(id) {
+            try{
+                this.loading = true
+                this.error = null
+
+                const res = await deleteCustomer(id)
+                await this.loadCustomer()
+
+                return res.data
             }catch(err){
                 this.error = err.response?.data?.message || err.message
                 throw err

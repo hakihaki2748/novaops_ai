@@ -8,7 +8,7 @@ const getCustomers = (params) => {
     });
 };
 
-const getCustomersById = (id) => {
+const getCustomerById = (id) => {
     return api.get(`/customers/${id}`)
 }
 
@@ -17,7 +17,7 @@ const createCustomer = (payload) => {
 }
 
 const updateCustomer = (id, payload) => {
-    return api.patch(`/customers/${id}`)
+    return api.patch(`/customers/${id}`, payload)
 }
 
 const updateCustomerVip = (id, isVip) => {
@@ -44,7 +44,7 @@ const deleteCustomer = (id) => {
 
 export {
     getCustomers,
-    getCustomersById,
+    getCustomerById,
     createCustomer,
     updateCustomer,
     updateCustomerVip,
