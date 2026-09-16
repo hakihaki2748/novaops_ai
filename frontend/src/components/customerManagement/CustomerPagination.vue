@@ -88,7 +88,7 @@ const goTo = (page) => {
 
 <template>
     <div
-        
+        v-if="total > 0"
         class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
     >
         <p class="text-sm text-slate-500">
