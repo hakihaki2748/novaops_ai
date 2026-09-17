@@ -188,7 +188,7 @@ const detailCustomer = async (id) => {
             <CustomerPagination
                 :page="customerStore.pagination.page"
                 :totalPages="customerStore.pagination.totalPages"
-                :total="customerStore.pagination.total"
+                :totalCustomer="customerStore.pagination.totalCustomer"
                 :limit="customerStore.pagination.limit"
                 @change="changePage"
             />

@@ -14,7 +14,7 @@ let searchTimer = null
 
 const handleSearch = () =>
 {
-    clearTimeout(searchTimeout);
+    clearTimeout(searchTimer);
 
     searchTimer = setTimeout(() =>
     {
@@ -22,7 +22,17 @@ const handleSearch = () =>
     }, 400)
 };
 
-const handleFilter = () =>
+//untuk melakukan filter
+const handleFilter = () => {
+    emit("filter", {
+        status: status.value,
+        segment: segment.value,
+        is_vip: isVip.value
+    })
+}
+
+//untuk melakukan sorting
+const handleSort = () =>
 {
     emit("sort", sort.value, order.value)
 }

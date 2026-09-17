@@ -20,7 +20,7 @@ export const useCustomerStore = defineStore("customer", {
         pagination: {
             page: 1,
             limit: 10,
-            total: 0,
+            totalCustomer: 0,
             totalPages: 0,
         },
 
@@ -95,20 +95,20 @@ export const useCustomerStore = defineStore("customer", {
 
             this.pagination.page = page
 
-            await this.loadCustomer()
+            await this.loadCustomers()
         },
 
         async setSearch (search) {
             this.filters.search = search
             this.pagination.page = 1
-            await this.loadCustomer();
+            await this.loadCustomers();
         },
 
         async setSorting (sort, order) {
             this.filters.sort = sort
             this.filters.order = order
 
-            await this.loadCustomer();
+            await this.loadCustomers();
         },
 
         async resetFilters() { 
@@ -148,7 +148,7 @@ export const useCustomerStore = defineStore("customer", {
                 this.error = null
                 
                 const res = await updateCustomer(id, payload)
-                await this.loadCustomer()
+                await this.loadCustomers()
 
                 return res.data
 
@@ -166,7 +166,7 @@ export const useCustomerStore = defineStore("customer", {
                 this.error = null
 
                 const res = await updateCustomerVip(id, isVip)
-                await this.loadCustomer()
+                await this.loadCustomers()
 
                 return res.data
             }catch(err){
@@ -184,7 +184,7 @@ export const useCustomerStore = defineStore("customer", {
 
                 const res = await updateCustomerSegment(id, segment)
                 
-                await this.loadCustomer()
+                await this.loadCustomers()
 
                 return res.data
             }catch(err){
@@ -201,7 +201,7 @@ export const useCustomerStore = defineStore("customer", {
                 this.error = null
 
                 const res = await updateCustomerStatus(id, status)
-                await this.loadCustomer()
+                await this.loadCustomers()
 
                 return res.data
             }catch(err){
@@ -218,7 +218,7 @@ export const useCustomerStore = defineStore("customer", {
                 this.error = null
 
                 const res = await deleteCustomer(id)
-                await this.loadCustomer()
+                await this.loadCustomers()
 
                 return res.data
             }catch(err){

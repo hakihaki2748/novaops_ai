@@ -12,7 +12,7 @@ const props = defineProps({
         default: 0
     },
 
-    total: {
+    totalCustomer: {
         type: Number,
         default: 0
     },
@@ -29,7 +29,7 @@ const emit = defineEmits([
 
 const start = computed(() => {
 
-    if (props.total === 0) {
+    if (props.totalCustomer === 0) {
         return 0;
     }
 
@@ -40,7 +40,7 @@ const end = computed(() => {
 
     return Math.min(
         props.page * props.limit,
-        props.total
+        props.totalCustomer
     );
 });
 
@@ -88,7 +88,7 @@ const goTo = (page) => {
 
 <template>
     <div
-        v-if="total > 0"
+        v-if="totalCustomer > 0"
         class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
     >
         <p class="text-sm text-slate-500">
@@ -98,7 +98,7 @@ const goTo = (page) => {
             </span>
             of
             <span class="font-semibold text-slate-700">
-                {{ total }}
+                {{ totalCustomer }}
             </span>
             customers
         </p>
