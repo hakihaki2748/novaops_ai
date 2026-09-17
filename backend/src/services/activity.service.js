@@ -25,7 +25,7 @@ const getUserLogs = async (id, currentUser) => {
 
 const getCustomerHistory = async (id, currentUser) => {
     //cek customer
-    const customer = await customerReposiory.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id)
 
     if(!customer){
         throw new AppError("Customer Tidak Ditemukan", 404);

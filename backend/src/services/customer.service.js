@@ -1,17 +1,46 @@
 //import repository
 import { boolean } from "zod"
 import customerRepository from "../repositories/customer.repository.js"
+import activityRepository from "../repositories/activity.repository.js"
+import { transaction, commit, rollback } from "../config/transaction.js"
 import AppError from "../utils/AppError.js"
 import validateIdSchema from "../validations/vaildateId.js"
 
-const createCustomer = async ({name, email, phone}) => {
+const createCustomer = async ({name, email, phone, currentUser}) => {
     //cari email apakah sudah digunakan
     const findEmail = await customerRepository.findCustomerByEmail(email)
     if(findEmail.length !== 0) throw new AppError("Email Sudah Digunakan", 400)
+    
+        //buat connection
+    const connection = await transaction()
 
-    const newCustomer = await customerRepository.createCustomer({name, email, phone})
+    try {
+        
+        const newCustomer = await customerRepository.createCustomer({
+            name, 
+            email, 
+            phone
+        }, connection)
 
-    return newCustomer
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.created",
+            entity_type: "customer",
+            entity_id: newCustomer,
+            description: `${currentUser.role} menambahkan customer baru`
+        }, connection)
+        
+        await commit(connection)
+        return newCustomer
+    } catch (err) {
+        await rollback(connection)
+
+        throw err
+    }finally{
+        connection.release()
+    }
 }
 
 const getCustomerById = async (id) => {

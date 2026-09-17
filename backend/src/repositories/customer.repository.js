@@ -4,14 +4,14 @@ import AppError  from "../utils/AppError.js"
 
 const createCustomer = async ({
     name, email, phone
-}) => {
+}, connection = db) => {
 
     const sql = `
     INSERT INTO customers(name, email, phone)
     VALUES (?, ?, ?)
     `
     try{
-        const [result] = await db.execute(sql, [
+        const [result] = await connection.execute(sql, [
             name,
             email,
             phone
