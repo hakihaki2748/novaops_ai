@@ -217,7 +217,7 @@ const countCustomers = async ({search, status, segment, isVip}) => {
             )
         `;
 
-        const searchValue = `$%{search}%`
+        const searchValue = `%${search}%`
 
         params.push(searchValue, searchValue, searchValue)
     }

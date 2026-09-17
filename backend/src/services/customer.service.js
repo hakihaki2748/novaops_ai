@@ -55,8 +55,7 @@ const findCustomers = async ({search, status, segment, is_vip, sort, order, page
         ...customer,
         is_vip: Boolean(customer.is_vip)
     }))
-    console.log(findAllCustomers)
-    const totalPages = totalCustomer === 0 ? 0 : Math.ceil(totalCustomer / limit)
+    const totalPages = totalCustomer === 0 ? 0 : Math.ceil(totalCustomer / perLimit)
 
     if(findAllCustomers.length === 0) throw new AppError("Data Tidak Ditemukan", 404)
     
