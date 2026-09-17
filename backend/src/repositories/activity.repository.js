@@ -56,14 +56,14 @@ const createLog = async ({
 }
 
 //buat function findUserLogs
-const findUserLogs = async ({ entity_type, entity_id },connection = db) => {
+const findEntityLogs = async ({ entity_type, entity_id },connection = db) => {
     //buat sql
     const sql = `
-        SELECT *
+        SELECT id, company_id, actor_role, event_type, entity_type, entity_id, description, created_at
         FROM activity_logs
         WHERE entity_type = ?
         AND entity_id = ?
-        ORDER BY created_at DESC
+        ORDER BY created_at DESC, id DESC
         `;
 
     //kita lakukan destructuring array
@@ -76,5 +76,5 @@ const findUserLogs = async ({ entity_type, entity_id },connection = db) => {
 export default {
     findUserById,
     createLog,
-    findUserLogs,
+    findEntityLogs,
 }

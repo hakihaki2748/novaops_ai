@@ -10,9 +10,14 @@ import updateCustomerVipSchema from "../validations/customerSchemas/updateCustom
 import updateCustomerSegmentSchema from "../validations/customerSchemas/updateCustomerSegment.schema.js"
 import updateCustomerStatusSchema from "../validations/customerSchemas/updateCustomerStatus.schema.js"
 import customerQuerySchema from "../validations/customerSchemas/customerQuery.schema.js";
+import activityController from "../controllers/activity.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js"
+import roleMiddleware from "../middlewares/role.middleware.js"
+
 
 
 router.get("/",validateQuery(customerQuerySchema), customerController.findCustomers);
+router.get("/:id/history", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), activityController.getCustomerHistory)
 router.get("/:id", customerController.getCustomerById);
 router.post("/", validate(createCustomerSchema), customerController.createCustomer);
 router.patch("/:id",validate(updateCustomerSchema), customerController.updateCustomer);

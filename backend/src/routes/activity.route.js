@@ -8,5 +8,6 @@ import activityController from "../controllers/activity.controller.js";
 const router = express.Router();
 
 router.get("/:id/logs", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), activityController.getUserLogs);
+// router.get("/:id/history", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), activityController.getCustomerHistory);
 
 export default router;

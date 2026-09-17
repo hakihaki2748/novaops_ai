@@ -14,4 +14,19 @@ const getUserLogs = async (req, res, next) => {
     }
 }
 
-export default { getUserLogs }
+
+//customer history
+const getCustomerHistory = async (req, res, next) => {
+    try {
+        const id = Number(req.params.id)
+
+        const history = await activityService.getCustomerHistory(id, req.user)
+        return res.status(200).json(
+            apiResponse.success("History Customer", history)
+        )
+    } catch (err) {
+        next(err)
+    }
+}
+
+export default { getUserLogs, getCustomerHistory }

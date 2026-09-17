@@ -1,5 +1,6 @@
 //import repository
 import activityRepository from '../repositories/activity.repository.js';
+import customerRepository from '../repositories/customer.repository.js';
 import AppError from '../utils/AppError.js';
 
 const getUserLogs = async (id, currentUser) => {
@@ -22,7 +23,28 @@ const getUserLogs = async (id, currentUser) => {
     });
 }
 
+const getCustomerHistory = async (id, currentUser) => {
+    //cek customer
+    const customer = await customerReposiory.getCustomerById(id)
+
+    if(!customer){
+        throw new AppError("Customer Tidak Ditemukan", 404);
+    }
+
+    //cek permission nanti saja
+
+
+    const logs = await activityRepository.findEntityLogs({
+        entity_type: "customer",
+        entity_id: id
+    })
+
+
+    return logs
+}
+
 
 export default {
     getUserLogs,
+    getCustomerHistory
 }
