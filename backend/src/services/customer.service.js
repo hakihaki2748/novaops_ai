@@ -132,7 +132,7 @@ const updateCustomer = async ({id, name, email, phone, currentUser}) => {
             company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "customer.updateed",
+            event_type: "customer.updated",
             entity_type: "customer",
             entity_id: Number(id),
             description: `${currentUser.role} mengupdate customer`
