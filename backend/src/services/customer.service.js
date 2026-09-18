@@ -104,15 +104,15 @@ const findCustomers = async ({search, status, segment, is_vip, sort, order, page
 
 
 
-const updateCustomer = async ({id, name, email, phone}) => {
+const updateCustomer = async ({id, name, email, phone, currentUser}) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
     if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
 
     //cek email apakah sudah digunakan oleh customer lain
     const findEmail = await customerRepository.findCustomerByEmail(email)
-    console.log(findEmail)
-    //juka email ditemukan, dan id tidak sama dengan idUpdate maka gagal
+
+    //jika email ditemukan, dan id tidak sama dengan idUpdate maka gagal
     if(findEmail.length !== 0 && findEmail[0].id !== Number(id)) throw new AppError("Email Sudah Digunakan", 400)
     
     //cek email findEmail apakah emailnya sama
@@ -121,18 +121,38 @@ const updateCustomer = async ({id, name, email, phone}) => {
 
     if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
     
-    const updateCus = await customerRepository.updateCustomer({
-        id: Number(id),
-        name: name,
-        email: email,
-        phone: phone
-    })
+    const connection = await transaction()
+    try {
+        const updateCus = await customerRepository.updateCustomer({
+            id: Number(id),
+            name: name,
+            email: email,
+            phone: phone
+        }, connection)
 
-    return updateCus
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.update",
+            entity_type: "customer",
+            entity_id: Number(id),
+            description: `${currentUser.role} mengupdate customer`
+        }, connection)
+
+        await commit(connection)
+        return updateCus
+    } catch (err) {
+        await rollback(connection)
+        throw err
+    }finally{
+        connection.release()
+    }
+   
 }
 
 //update customer vip
-const updateCustomerVip = async ({id, isVip}) => {
+const updateCustomerVip = async ({id, isVip, currentUser} ) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
 
@@ -152,26 +172,49 @@ const updateCustomerVip = async ({id, isVip}) => {
         )
     }
 
-    const updateCus = await customerRepository.updateCustomerVip({
-        id: Number(id),
-        isVip
-    })
-    
-    if(updateCus.affectedRows === 0){
-        throw new AppError(
-            "Gagal Update Status VIP Customer",
-            400
-        )
+    const connection = await transaction()
+
+    try {
+        const updateCus = await customerRepository.updateCustomerVip({
+            id: Number(id),
+            isVip
+        }, connection)
+
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.update_vip",
+            entity_type: "customer",
+            entity_id: Number(id),
+            description: `${currentUser.role} mengupdate customer vip`
+        }, connection)
+
+        await commit(connection)
+        
+        if(updateCus.affectedRows === 0){
+            throw new AppError(
+                "Gagal Update Status VIP Customer",
+                400
+            )
+        }
+        
+        return {
+            id: Number(id),
+            isVip
+        }
+
+    } catch (err) {
+        await rollback(connection)
+    }finally{
+        connection.release()
     }
+
     
-    return {
-        id: Number(id),
-        isVip
-    }
 }
 
 //untuk update segment customer
-const updateCustomerSegment = async ({id, segment}) => {
+const updateCustomerSegment = async ({id, segment, currentUser}) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
 
@@ -191,27 +234,48 @@ const updateCustomerSegment = async ({id, segment}) => {
         )
     }
     
-    const updateCus = await customerRepository.updateCustomerSegment({
-        id: Number(id),
-        segment
-    })
+    const connection = await transaction()
+    try {
+        const updateCus = await customerRepository.updateCustomerSegment({
+            id: Number(id),
+            segment
+        }, connection)
 
-    if(updateCus.affectedRows === 0){
-        throw new AppError(
-            "Gagal Update Segment Customer",
-            400
-        )
-    }
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.created",
+            entity_type: "customer",
+            entity_id: newCustomer,
+            description: `${currentUser.role} mengupdate customer segment`
+        }, connection)
 
-    return {
-        id: Number(id),
-        segment
+        await commit(connection)
+
+        if(updateCus.affectedRows === 0){
+            throw new AppError(
+                "Gagal Update Segment Customer",
+                400
+            )
+        }
+
+        return {
+            id: Number(id),
+            segment
+        }
+    } catch (err) {
+        await rollback(connection)
+        throw err;
+    }finally{
+        connection.release()
     }
+    
 }
 
 
 //untuk update status customer
-const updateCustomerStatus = async ({id, status}) => {
+const updateCustomerStatus = async ({id, status, currentUser}) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
 
@@ -224,25 +288,44 @@ const updateCustomerStatus = async ({id, status}) => {
         )
     }
 
-    const updateCus = await customerRepository.updateCustomerStatus({
-        id: Number(id),
-        status
-    })
+    const connection = await transaction()
+    try {
+        const updateCus = await customerRepository.updateCustomerStatus({
+            id: Number(id),
+            status
+        }, connection)
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.update_status",
+            entity_type: "customer",
+            entity_id: Number(id),
+            description: `${currentUser.role} mengupadate customer status`
+        }, connection)
 
-    if(updateCus.affectedRows === 0){
-        throw new AppError(
-            "Gagal Update Status Customer",
-            400
-        )
-    }
+        await commit(connection)
 
-    return {
-        id: Number(id),
-        status
+        if(updateCus.affectedRows === 0){
+            throw new AppError(
+                "Gagal Update Status Customer",
+                400
+            )
+        }
+
+        return {
+            id: Number(id),
+            status
+        }
+    } catch (err) {
+        rollback(connection)
+    }finally{
+        connection.release()
     }
+    
 }
 
-const deleteCustomer = async (id) => {
+const deleteCustomer = async (id, currentUser) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
     if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
@@ -253,9 +336,23 @@ const deleteCustomer = async (id) => {
     
     if(customer.deleted_at !== null) throw new AppError("Customer Sudah Dihapus", 404)
     
-    const deleteCus = await customerRepository.deleteCustomer(id)
-    
-    return deleteCus;
+    const connection = await transaction()
+    try {
+        const deleteCus = await customerRepository.deleteCustomer(id, connection)
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.delete",
+            entity_type: "customer",
+            entity_id: Number(id),
+            description: `${currentUser.role} menghapus customer`
+        }, connection)
+        return deleteCus;
+    } catch (err) {
+        
+    }
+   
 }
 
 

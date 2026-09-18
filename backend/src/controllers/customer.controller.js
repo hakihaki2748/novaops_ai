@@ -6,7 +6,7 @@ const createCustomer = async (req, res, next) => {
     const { name, email, phone } = req.body;
 
     try{
-        const result = await customerService.createCustomer({name, email, phone})
+        const result = await customerService.createCustomer({name, email, phone, currentUser: req.user})
         return res.status(201).json(
             apiResponse.success("Data Di Tambahkan", result)
         )
@@ -33,7 +33,7 @@ const updateCustomer = async (req, res, next) => {
     const id = Number(req.params.id)
     const { name, email, phone } = req.body
     try{
-        const result = await customerService.updateCustomer({id, name, email, phone})
+        const result = await customerService.updateCustomer({id, name, email, phone, currentUser: req.user})
         return res.status(200).json(
             apiResponse.success("Update Berhasil", result)
         )
@@ -61,7 +61,7 @@ const updateCustomerVip = async (req, res, next) => {
     const {isVip} = req.body
 
     try{
-        const result = await customerService.updateCustomerVip({id, isVip})
+        const result = await customerService.updateCustomerVip({id, isVip, currentUser: req.user})
         return res.status(200).json(
             apiResponse.success("Update Status VIP Berhasil", result)
         )
@@ -76,7 +76,7 @@ const updateCustomerSegment = async (req, res, next) => {
     const {segment} = req.body
 
     try{
-        const result = await customerService.updateCustomerSegment({id, segment})
+        const result = await customerService.updateCustomerSegment({id, segment, currentUser: req.user})
         return res.status(200).json(
             apiResponse.success("Update Segment Customer Berhasil", result)
         )
@@ -93,7 +93,7 @@ const updateCustomerStatus = async (req, res, next) => {
     const {status} = req.body
 
     try{
-        const result = await customerService.updateCustomerStatus({id, status})
+        const result = await customerService.updateCustomerStatus({id, status, currentUser: req.user})
         return res.status(200).json(
             apiResponse.success("Update Status Customer Berhasil", result)
         )
@@ -106,7 +106,7 @@ const deleteCustomer = async (req, res, next) => {
     const  id = Number(req.params.id)
 
     try{
-        const result = await customerService.deleteCustomer(id)
+        const result = await customerService.deleteCustomer(id, req.user)
         return res.status(200).json(
             apiResponse.success("Data Berhasil Dihapus", result)
         )
