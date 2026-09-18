@@ -26,23 +26,23 @@ const createCustomer = async ({
     
 }
 
-const findCustomerByEmail = async (email) => {
+const findCustomerByEmail = async (email, connection = db) => {
     const sql = `
         SELECT id, name, email, phone
         FROM customers
         WHERE email = ?
     `
-    const [rows] = await db.execute(sql, [email])
+    const [rows] = await connection.execute(sql, [email])
     return rows;
 }
 
-const getCustomerById = async (id) => {
+const getCustomerById = async (id, connection = db) => {
     const sql = `
         SELECT id, name, email, phone, is_vip, segment, status, created_at, updated_at, deleted_at 
         FROM customers
         WHERE id = ?
     `
-    const [rows] = await db.execute(sql, [id])
+    const [rows] = await connection.execute(sql, [id])
     return rows[0]
 }
 
@@ -112,14 +112,14 @@ const findCustomers = async ({ search, status, segment, isVip, sort, order, limi
     `;
     // params.push(limit, offset)
 
-    const [rows] = await db.execute(sql, params);
+    const [rows] = await connection.execute(sql, params);
 
     return rows;
 };
 
 
 
-const updateCustomer = async ({id, name, email, phone}) => { 
+const updateCustomer = async ({id, name, email, phone}, connection = db) => { 
     const sql = `
         UPDATE customers
         SET name = ?, email = ?, phone = ?, updated_at = NOW()
@@ -127,7 +127,7 @@ const updateCustomer = async ({id, name, email, phone}) => {
         AND deleted_at IS NULL
     `
     try{
-        const [result] = await db.execute(sql, [ 
+        const [result] = await connection.execute(sql, [ 
             name, 
             email, 
             phone, 
@@ -144,7 +144,7 @@ const updateCustomer = async ({id, name, email, phone}) => {
 
 
 // untuk update vip customer
-const updateCustomerVip = async ({id, isVip}) => {
+const updateCustomerVip = async ({id, isVip}, connection = db) => {
     const sql = `
         UPDATE customers
         SET is_vip = ?, updated_at = now()
@@ -152,13 +152,13 @@ const updateCustomerVip = async ({id, isVip}) => {
         AND deleted_at IS NULL
     `
 
-    const [result] = await db.execute(sql, [isVip, id])
+    const [result] = await connection.execute(sql, [isVip, id])
     return result;
 }
 
 
 //untuk update segment customer
-const updateCustomerSegment = async ({id, segment}) => {
+const updateCustomerSegment = async ({id, segment}, connection = db) => {
     const sql = `
         UPDATE customers
         SET segment = ?, updated_at = now()
@@ -166,13 +166,13 @@ const updateCustomerSegment = async ({id, segment}) => {
         AND deleted_at IS NULL
         `
 
-        const [result] = await db.execute(sql, [segment, id])
+        const [result] = await connection.execute(sql, [segment, id])
         return result
 }
 
 
 //untuk update status customer
-const updateCustomerStatus = async ({id, status}) => {
+const updateCustomerStatus = async ({id, status}, connection = db) => {
     const sql = `
         UPDATE customers
         SET status = ? , updated_at = now()
@@ -180,12 +180,12 @@ const updateCustomerStatus = async ({id, status}) => {
         AND deleted_at IS NULL 
         `
 
-        const [result] = await db.execute(sql, [status, id])
+        const [result] = await connection.execute(sql, [status, id])
         return result
 }
 
 
-const deleteCustomer = async (id) => {
+const deleteCustomer = async (id, connection = db) => {
     const sql = `
         UPDATE customers
         SET deleted_at = NOW()
@@ -193,7 +193,7 @@ const deleteCustomer = async (id) => {
         AND deleted_at IS NULL
     `
 
-    const [result] = await db.execute(sql, [id])
+    const [result] = await connection.execute(sql, [id])
     return result;
 }
 
