@@ -24,7 +24,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     try {
-        //tambah property baru namanya user di req
+        //tambah property baru yang namanya user dan simpan di req
         req.user = verifyToken(token);
 
         next();

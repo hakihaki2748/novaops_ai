@@ -24,7 +24,8 @@ const login = async (data) => {
 
     const token = generateToken({
         id: user.id,
-        role: user.role
+        role: user.role,
+        company_id: user.company_id
     })
 
     return {
@@ -33,7 +34,8 @@ const login = async (data) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            status: user.status
+            status: user.status,
+            company_id: company_id
         },
 
         token
