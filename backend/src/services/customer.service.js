@@ -134,7 +134,7 @@ const updateCustomer = async ({id, name, email, phone, currentUser}) => {
             company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "customer.update",
+            event_type: "customer.updateed",
             entity_type: "customer",
             entity_id: Number(id),
             description: `${currentUser.role} mengupdate customer`
@@ -184,14 +184,12 @@ const updateCustomerVip = async ({id, isVip, currentUser} ) => {
             company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "customer.update_vip",
+            event_type: "customer.vip_updated",
             entity_type: "customer",
             entity_id: Number(id),
             description: `${currentUser.role} mengupdate customer vip`
         }, connection)
 
-        await commit(connection)
-        
         if(updateCus.affectedRows === 0){
             throw new AppError(
                 "Gagal Update Status VIP Customer",
@@ -199,6 +197,8 @@ const updateCustomerVip = async ({id, isVip, currentUser} ) => {
             )
         }
         
+        await commit(connection)
+
         return {
             id: Number(id),
             isVip
@@ -206,6 +206,8 @@ const updateCustomerVip = async ({id, isVip, currentUser} ) => {
 
     } catch (err) {
         await rollback(connection)
+
+        throw err
     }finally{
         connection.release()
     }
@@ -245,13 +247,11 @@ const updateCustomerSegment = async ({id, segment, currentUser}) => {
             company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "customer.created",
+            event_type: "customer.segment_updated",
             entity_type: "customer",
-            entity_id: newCustomer,
+            entity_id: Number(id),
             description: `${currentUser.role} mengupdate customer segment`
         }, connection)
-
-        await commit(connection)
 
         if(updateCus.affectedRows === 0){
             throw new AppError(
@@ -260,10 +260,12 @@ const updateCustomerSegment = async ({id, segment, currentUser}) => {
             )
         }
 
+        await commit(connection)
         return {
             id: Number(id),
             segment
         }
+        
     } catch (err) {
         await rollback(connection)
         throw err;
@@ -279,6 +281,12 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
 
+    if(!validateId.success){
+        throw new AppError(
+            validateId.error.errors[0].message,
+            400
+        )
+    }
     const customer = await customerRepository.getCustomerById(id)
 
     if(!customer || customer.deleted_at !== null){
@@ -298,13 +306,11 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
             company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "customer.update_status",
+            event_type: "customer.status_updated",
             entity_type: "customer",
             entity_id: Number(id),
             description: `${currentUser.role} mengupadate customer status`
         }, connection)
-
-        await commit(connection)
 
         if(updateCus.affectedRows === 0){
             throw new AppError(
@@ -312,6 +318,8 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
                 400
             )
         }
+        
+        await commit(connection)
 
         return {
             id: Number(id),
@@ -319,6 +327,7 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
         }
     } catch (err) {
         rollback(connection)
+        throw err;
     }finally{
         connection.release()
     }
@@ -343,14 +352,19 @@ const deleteCustomer = async (id, currentUser) => {
             company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
-            event_type: "customer.delete",
+            event_type: "customer.deleted",
             entity_type: "customer",
             entity_id: Number(id),
             description: `${currentUser.role} menghapus customer`
         }, connection)
+        await commit(connection)
         return deleteCus;
     } catch (err) {
-        
+        await rollback(connection)
+
+        throw err
+    }finally{
+        connection.release()
     }
    
 }
