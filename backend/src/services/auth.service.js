@@ -35,7 +35,7 @@ const login = async (data) => {
             email: user.email,
             role: user.role,
             status: user.status,
-            company_id: company_id
+            company_id: user.company_id
         },
 
         token
