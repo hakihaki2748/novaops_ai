@@ -115,8 +115,6 @@ const updateCustomer = async ({id, name, email, phone, currentUser}) => {
     //jika email ditemukan, dan id tidak sama dengan idUpdate maka gagal
     if(findEmail.length !== 0 && findEmail[0].id !== Number(id)) throw new AppError("Email Sudah Digunakan", 400)
     
-    //cek email findEmail apakah emailnya sama
-    if(findEmail[0].email === email) throw new AppError("Email Sudah Digunakan", 400)
     const customer = await customerRepository.getCustomerById(id)
 
     if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
@@ -302,6 +300,7 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
             id: Number(id),
             status
         }, connection)
+
         await activityRepository.createLog({
             company_id: currentUser.company_id,
             user_id: currentUser.id,
@@ -326,7 +325,7 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
             status
         }
     } catch (err) {
-        rollback(connection)
+        await rollback(connection)
         throw err;
     }finally{
         connection.release()
