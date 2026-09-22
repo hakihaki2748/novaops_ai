@@ -3,15 +3,16 @@ import db from "../config/database.js"
 import AppError  from "../utils/AppError.js"
 
 const createCustomer = async ({
-    name, email, phone
+    company_id, name, email, phone
 }, connection = db) => {
 
     const sql = `
-    INSERT INTO customers(name, email, phone)
-    VALUES (?, ?, ?)
+    INSERT INTO customers(company_id, name, email, phone)
+    VALUES (?, ?, ?, ?)
     `
     try{
         const [result] = await connection.execute(sql, [
+            company_id,
             name,
             email,
             phone
@@ -28,7 +29,7 @@ const createCustomer = async ({
 
 const findCustomerByEmail = async (email, connection = db) => {
     const sql = `
-        SELECT id, name, email, phone
+        SELECT id, company_id, name, email, phone
         FROM customers
         WHERE email = ?
     `
@@ -36,22 +37,24 @@ const findCustomerByEmail = async (email, connection = db) => {
     return rows;
 }
 
-const getCustomerById = async (id, connection = db) => {
+const getCustomerById = async (id, company_id, connection = db) => {
     const sql = `
-        SELECT id, name, email, phone, is_vip, segment, status, created_at, updated_at, deleted_at 
+        SELECT id, company_id, name, email, phone, is_vip, segment, status, created_at, updated_at, deleted_at 
         FROM customers
         WHERE id = ?
+        AND company_id = ?
     `
-    const [rows] = await connection.execute(sql, [id])
+    const [rows] = await connection.execute(sql, [id, company_id])
     return rows[0]
 }
 
 //ini untuk sort,filter,search dan pagination
-const findCustomers = async ({ search, status, segment, isVip, sort, order, limit, offset}) => {
+const findCustomers = async ({company_id, search, status, segment, isVip, sort, order, limit, offset}) => {
 
     let sql = `
         SELECT
             id,
+            company_id,
             name,
             email,
             phone,
@@ -61,10 +64,11 @@ const findCustomers = async ({ search, status, segment, isVip, sort, order, limi
             created_at,
             updated_at
         FROM customers
-        WHERE deleted_at IS NULL
+        WHERE company_id = ?
+        AND deleted_at IS NULL
     `;
 
-    const params = [];
+    const params = [company_id];
     const safelimit = Number.isInteger(Number(limit)) ? Number(limit) : 10
     const safeOffset = Number.isInteger(Number(offset)) ? Number(offset) : 0
     if (search) {
@@ -112,26 +116,29 @@ const findCustomers = async ({ search, status, segment, isVip, sort, order, limi
     `;
     // params.push(limit, offset)
 
-    const [rows] = await connection.execute(sql, params);
+    const [rows] = await db.execute(sql, params);
 
     return rows;
 };
 
 
 
-const updateCustomer = async ({id, name, email, phone}, connection = db) => { 
+const updateCustomer = async ({id, company_id, name, email, phone}, connection = db) => { 
     const sql = `
         UPDATE customers
         SET name = ?, email = ?, phone = ?, updated_at = NOW()
         where id = ?
+        AND company_id = ?
         AND deleted_at IS NULL
     `
     try{
-        const [result] = await connection.execute(sql, [ 
+        const [result] = await connection.execute(sql, [
+             
             name, 
             email, 
             phone, 
-            id
+            id,
+            company_id
         ])
 
         return result
@@ -144,69 +151,74 @@ const updateCustomer = async ({id, name, email, phone}, connection = db) => {
 
 
 // untuk update vip customer
-const updateCustomerVip = async ({id, isVip}, connection = db) => {
+const updateCustomerVip = async ({id, company_id, isVip}, connection = db) => {
     const sql = `
         UPDATE customers
         SET is_vip = ?, updated_at = now()
         WHERE id = ?
+        AND company_id = ?
         AND deleted_at IS NULL
     `
 
-    const [result] = await connection.execute(sql, [isVip, id])
+    const [result] = await connection.execute(sql, [isVip, id, company_id])
     return result;
 }
 
 
 //untuk update segment customer
-const updateCustomerSegment = async ({id, segment}, connection = db) => {
+const updateCustomerSegment = async ({id, company_id, segment}, connection = db) => {
     const sql = `
         UPDATE customers
         SET segment = ?, updated_at = now()
         WHERE id = ?
+        AND company_id = ?
         AND deleted_at IS NULL
         `
 
-        const [result] = await connection.execute(sql, [segment, id])
+        const [result] = await connection.execute(sql, [segment, id, company_id])
         return result
 }
 
 
 //untuk update status customer
-const updateCustomerStatus = async ({id, status}, connection = db) => {
+const updateCustomerStatus = async ({id, company_id, status}, connection = db) => {
     const sql = `
         UPDATE customers
         SET status = ? , updated_at = now()
         WHERE id = ?
+        AND company_id = ?
         AND deleted_at IS NULL 
         `
 
-        const [result] = await connection.execute(sql, [status, id])
+        const [result] = await connection.execute(sql, [status, id, company_id])
         return result
 }
 
 
-const deleteCustomer = async (id, connection = db) => {
+const deleteCustomer = async (id, company_id, connection = db) => {
     const sql = `
         UPDATE customers
         SET deleted_at = NOW()
         WHERE id = ?
+        AND company_id = ?
         AND deleted_at IS NULL
     `
 
-    const [result] = await connection.execute(sql, [id])
+    const [result] = await connection.execute(sql, [id, company_id])
     return result;
 }
 
 //untuk menghitung total data yang ditampilkan
-const countCustomers = async ({search, status, segment, isVip}) => {
+const countCustomers = async ({company_id, search, status, segment, isVip}) => {
     let sql = `
         SELECT COUNT(*) AS total
         FROM customers
-        WHERE deleted_at IS NULL
+        WHERE company_id = ?
+        AND deleted_at IS NULL
     `;
     
     //untuk menampung nilai
-    const params = [];
+    const params = [company_id];
 
     if(search){
         sql += `

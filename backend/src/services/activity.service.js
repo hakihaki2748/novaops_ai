@@ -25,7 +25,7 @@ const getUserLogs = async (id, currentUser) => {
 
 const getCustomerHistory = async (id, currentUser) => {
     //cek customer
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if(!customer){
         throw new AppError("Customer Tidak Ditemukan", 404);
@@ -35,6 +35,7 @@ const getCustomerHistory = async (id, currentUser) => {
 
 
     const logs = await activityRepository.findEntityLogs({
+        company_id: currentUser.company_id,
         entity_type: "customer",
         entity_id: id
     })

@@ -19,7 +19,7 @@ const getCustomerById = async (req, res, next) =>{
     try{
         const id = Number(req.params.id)
 
-        const result = await customerService.getCustomerById(id)
+        const result = await customerService.getCustomerById(id, req.user)
         return res.status(200).json(
             apiResponse.success("Data Ditemukan", result)
         )
@@ -43,8 +43,9 @@ const updateCustomer = async (req, res, next) => {
 }
 
 const findCustomers = async (req, res, next) => {
+
     try{
-        const result = await customerService.findCustomers(req.validQuery);
+        const result = await customerService.findCustomers(req.validQuery, req.user);
 
         return res.status(200).json(
             apiResponse.success("Data Customer Dambil", result)

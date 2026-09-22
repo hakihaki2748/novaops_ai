@@ -14,7 +14,8 @@ import activityController from "../controllers/activity.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js"
 import roleMiddleware from "../middlewares/role.middleware.js"
 
-
+router.use(authMiddleware)
+router.use(roleMiddleware("owner", "manager", "admin", "user"))
 
 router.get("/",validateQuery(customerQuerySchema), customerController.findCustomers);
 router.get("/:id/history", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), activityController.getCustomerHistory)

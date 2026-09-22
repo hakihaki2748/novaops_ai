@@ -56,18 +56,19 @@ const createLog = async ({
 }
 
 //buat function findUserLogs
-const findEntityLogs = async ({ entity_type, entity_id },connection = db) => {
+const findEntityLogs = async ({ company_id, entity_type, entity_id },connection = db) => {
     //buat sql
     const sql = `
         SELECT id, company_id, actor_role, event_type, entity_type, entity_id, description, created_at
         FROM activity_logs
-        WHERE entity_type = ?
+        WHERE company_id = ?
+        AND entity_type = ?
         AND entity_id = ?
         ORDER BY created_at DESC, id DESC
         `;
 
     //kita lakukan destructuring array
-    const [result] = await connection.execute(sql, [entity_type, entity_id])
+    const [result] = await connection.execute(sql, [company_id, entity_type, entity_id])
 
     return result;
 }

@@ -17,6 +17,7 @@ const createCustomer = async ({name, email, phone, currentUser}) => {
     try {
         
         const newCustomer = await customerRepository.createCustomer({
+            company_id: currentUser.company_id,
             name, 
             email, 
             phone
@@ -42,14 +43,14 @@ const createCustomer = async ({name, email, phone, currentUser}) => {
         connection.release()
     }
 }
+const getCustomerById = async (id, currentUser) => {
 
-const getCustomerById = async (id) => {
     //validasi id
     const validateId = validateIdSchema.safeParse({id})
     if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
 
     //cari id customer
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
 
@@ -60,7 +61,7 @@ const getCustomerById = async (id) => {
 }
 
 //digunakan saat query parameter aktif untuk search,sort atau filter
-const findCustomers = async ({search, status, segment, is_vip, sort, order, page, limit}) => {
+const findCustomers = async ({search, status, segment, is_vip, sort, order, page, limit}, currentUser) => {
     const isVip = is_vip === "true" ? true : is_vip === "false" ? false : undefined;
     
     const currentPage = Number(page) || 1
@@ -69,6 +70,7 @@ const findCustomers = async ({search, status, segment, is_vip, sort, order, page
 
     const [findAllCustomers, totalCustomer] = await Promise.all([
         customerRepository.findCustomers({
+            company_id: currentUser.company_id,
             search,
             status,
             segment,
@@ -78,7 +80,7 @@ const findCustomers = async ({search, status, segment, is_vip, sort, order, page
             limit: perLimit,
             offset: offset
         }),
-        customerRepository.countCustomers({search, status, segment, isVip})
+        customerRepository.countCustomers({company_id: currentUser.company_id, search, status, segment, isVip})
     ])
     const customers = findAllCustomers.map(customer => ({
         ...customer,
@@ -115,7 +117,7 @@ const updateCustomer = async ({id, name, email, phone, currentUser}) => {
     //jika email ditemukan, dan id tidak sama dengan idUpdate maka gagal
     if(findEmail.length !== 0 && findEmail[0].id !== Number(id)) throw new AppError("Email Sudah Digunakan", 400)
     
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if(!customer || customer.deleted_at !== null) throw new AppError("Customer tidak Ditemukan", 404)
     
@@ -123,9 +125,10 @@ const updateCustomer = async ({id, name, email, phone, currentUser}) => {
     try {
         const updateCus = await customerRepository.updateCustomer({
             id: Number(id),
+            company_id: currentUser.company_id,
             name: name,
             email: email,
-            phone: phone
+            phone: phone,
         }, connection)
 
         await activityRepository.createLog({
@@ -161,7 +164,7 @@ const updateCustomerVip = async ({id, isVip, currentUser} ) => {
         )
     }
 
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if (!customer || customer.deleted_at !== null){
         throw new AppError(
@@ -175,7 +178,8 @@ const updateCustomerVip = async ({id, isVip, currentUser} ) => {
     try {
         const updateCus = await customerRepository.updateCustomerVip({
             id: Number(id),
-            isVip
+            company_id: currentUser.company_id,
+            isVip,
         }, connection)
 
         await activityRepository.createLog({
@@ -225,7 +229,7 @@ const updateCustomerSegment = async ({id, segment, currentUser}) => {
         )
     }
     
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if(!customer || customer.deleted_at !== null){
         throw new AppError(
@@ -238,6 +242,7 @@ const updateCustomerSegment = async ({id, segment, currentUser}) => {
     try {
         const updateCus = await customerRepository.updateCustomerSegment({
             id: Number(id),
+            company_id: currentUser.company_id,
             segment
         }, connection)
 
@@ -285,7 +290,7 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
             400
         )
     }
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if(!customer || customer.deleted_at !== null){
         throw new AppError(
@@ -298,6 +303,7 @@ const updateCustomerStatus = async ({id, status, currentUser}) => {
     try {
         const updateCus = await customerRepository.updateCustomerStatus({
             id: Number(id),
+            company_id: currentUser.company_id,
             status
         }, connection)
 
@@ -338,7 +344,7 @@ const deleteCustomer = async (id, currentUser) => {
     const validateId = validateIdSchema.safeParse({id})
     if(!validateId.success) throw new AppError(validateId.error.errors[0].message, 400)
 
-    const customer = await customerRepository.getCustomerById(id)
+    const customer = await customerRepository.getCustomerById(id, currentUser.company_id)
 
     if(!customer) throw new AppError("Customer tidak Ditemukan", 404)
     
@@ -346,7 +352,7 @@ const deleteCustomer = async (id, currentUser) => {
     
     const connection = await transaction()
     try {
-        const deleteCus = await customerRepository.deleteCustomer(id, connection)
+        const deleteCus = await customerRepository.deleteCustomer(id, currentUser.company_id, connection)
         await activityRepository.createLog({
             company_id: currentUser.company_id,
             user_id: currentUser.id,
