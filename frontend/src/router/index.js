@@ -32,7 +32,8 @@ const router = createRouter({
       path: '/customers',
       name: 'customers',
       component: () => import('@/views/customerManagement.vue')
-    }
+    },
+  
   ],
 })
 
