@@ -33,6 +33,12 @@ const router = createRouter({
       name: 'customers',
       component: () => import('@/views/customerManagement.vue')
     },
+
+    {
+      path: 'customers/:id',
+      name: 'customer_detail',
+      component: () => import('@/views/CustomerDetail.vue')
+    },
   
   ],
 })
