@@ -42,6 +42,10 @@ const deleteCustomer = (id) => {
     return api.delete(`/customers/${id}`)
 }
 
+const getCustomerHistory = (id) => {
+    return api.get(`/customers/${id}/history`)
+}
+
 export {
     getCustomers,
     getCustomerById,
@@ -50,5 +54,6 @@ export {
     updateCustomerVip,
     updateCustomerSegment,
     updateCustomerStatus,
-    deleteCustomer
+    deleteCustomer,
+    getCustomerHistory
 };

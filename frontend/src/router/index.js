@@ -31,11 +31,11 @@ const router = createRouter({
     {
       path: '/customers',
       name: 'customers',
-      component: () => import('@/views/customerManagement.vue')
+      component: () => import('@/views/CustomerManagement.vue')
     },
 
     {
-      path: 'customers/:id',
+      path: '/customers/:id',
       name: 'customer_detail',
       component: () => import('@/views/CustomerDetail.vue')
     },

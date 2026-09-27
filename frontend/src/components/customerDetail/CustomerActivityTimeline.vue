@@ -59,7 +59,19 @@ const eventColor = (eventType) => {
 
 const formatDate = (value) => {
     if(!value) "-";
+
+    //format tanggal yg masuk ke value
+    return new Date(value).toLocaleString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    })
+
 }
+
+onMounted(loadHistory)
 
 </script>
 

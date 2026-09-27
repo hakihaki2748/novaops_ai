@@ -1,15 +1,16 @@
 <script setup>
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 import CustomerToolbar from "@/components/customerManagement/CustomerToolbar.vue";
-
 import CustomerTable from "@/components/customerManagement/CustomerTable.vue";
-
 import CustomerPagination from "@/components/customerManagement/CustomerPagination.vue";
-
 import { useCustomerStore } from "@/stores/customer.store";
 
+
 const customerStore = useCustomerStore();
+
+const router = useRouter()
 
 onMounted(async () => {
 
@@ -60,12 +61,12 @@ const changePage = async (page) => {
 
 const detailCustomer = async (id) => {
 
-    await customerStore.loadCustomer(id);
-
-    console.log(
-        "Customer detail:",
-        customerStore.customer
-    );
+    router.push({
+        name: "customer_detail",
+        params: {
+            id,
+        }
+    })
 
 };
 </script>
