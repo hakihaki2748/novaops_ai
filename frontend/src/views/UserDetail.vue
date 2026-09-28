@@ -152,7 +152,7 @@ onMounted(loadDetail)
                                 </div>
 
                                 <StatusDropdown
-                                    :status="userStore.user.status"
+                                    :status="userStore.user?.status"
                                     @change="changeStatus"
                                 />
 
@@ -172,7 +172,7 @@ onMounted(loadDetail)
                                 </div>
 
                                 <RoleDropdown
-                                    :role="userStore.user.role"
+                                    :role="userStore.user?.role"
                                     @change="changeRole"
                                 />
 
