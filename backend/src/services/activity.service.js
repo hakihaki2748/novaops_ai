@@ -17,7 +17,8 @@ const getUserLogs = async (id, currentUser) => {
         throw new AppError("Tidak Memiliki Akses", 403)
     }
 
-    return await activityRepository.findUserLogs({
+    return await activityRepository.findEntityLogs({
+        company_id: currentUser.company_id,
         entity_type: "user",
         entity_id: id,
     });

@@ -56,7 +56,7 @@ const createLog = async ({
 }
 
 //buat function findUserLogs
-const findEntityLogs = async ({ company_id, entity_type, entity_id },connection = db) => {
+const findEntityLogs = async ({ company_id, entity_type, entity_id }, connection = db) => {
     //buat sql
     const sql = `
         SELECT id, company_id, actor_role, event_type, entity_type, entity_id, description, created_at

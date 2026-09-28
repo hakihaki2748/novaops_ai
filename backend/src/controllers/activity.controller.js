@@ -4,8 +4,9 @@ import apiResponse from "../utils/apiResponse.js";
 
 
 const getUserLogs = async (req, res, next) => {
+    const id = Number(req.params.id)
     try{
-        const logs = await activityService.getUserLogs(req.params.id, req.user);
+        const logs = await activityService.getUserLogs(id, req.user);
         return res.status(200).json(
             apiResponse.success("Data Ditemukan", logs)
         )

@@ -95,7 +95,7 @@ const updateStatus = async ({id, status, currentUser}) => {
         await userRepository.updateStatus(id, status, connection);
 
         await activityRepository.createLog({
-            company_id: null,
+            company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
             event_type: "user.status_updated",
@@ -145,7 +145,7 @@ const updateRole = async ({id, role, currentUser}) => {
         await userRepository.updateRole(id, role, connection);
 
         await activityRepository.createLog({
-                company_id: null,
+                company_id: currentUser.company_id,
                 user_id: currentUser.id,
                 actor_role: currentUser.role,
                 event_type: "user.role_updated",
@@ -216,7 +216,7 @@ const createUser = async (payload, currentUser) => {
         }, connection)
         
         await activityRepository.createLog({
-            company_id: null,
+            company_id: currentUser.id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
             event_type: "user.created",
@@ -263,7 +263,7 @@ const softDelete = async ({id, currentUser}) => {
         await userRepository.softDelete(id, connection);
         
         await activityRepository.createLog({
-            company_id: null,
+            company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
             event_type: "user.deleted",
