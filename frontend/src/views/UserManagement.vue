@@ -1,6 +1,7 @@
 <script setup>
 import { useUserStore } from '@/stores/user.store';
 import { onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 import UserSearch from '@/components/userManagement/UserSearch.vue';
 import UserTable from '@/components/userManagement/UserTable.vue';
@@ -9,9 +10,7 @@ import UserPagination from '@/components/userManagement/UserPagination.vue';
 
 const userStore = useUserStore();
 
-
-
-
+const router = useRouter()
 
 const searchUser = async (keywoard) => {
     await userStore.setSearch(keywoard)
@@ -22,7 +21,12 @@ const changePage = async (page) => {
 }
 
 const detailUser = async (id) => {
-    await userStore.loadUser(id)
+    router.push({
+        name: "user_detail",
+        params: {
+            id,
+        }
+    })
 }
 
 const updateRole = async (id) => {
@@ -250,6 +254,7 @@ onMounted(async () => {
                     v-else
                     :users="userStore.users"
                     @deleteUser="deleteUser"
+                    @detailUser="detailUser"
                 />
 
                 <!-- PAGINATION -->

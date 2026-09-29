@@ -59,7 +59,14 @@ export const useUserStore = defineStore("user", {
                 this.errorDetail = null
 
                 const res = await getUserById(id);
+                
+                if(!res.data?.success || !res.data?.data){
+                    throw new Error( res.data?.message || "User Tidak Ditemukan")
+                }
+
                 this.user = res.data.data
+
+                return this.user
             } catch (err) {
                 this.errorDetail = err.response?.data?.message || err.message
 

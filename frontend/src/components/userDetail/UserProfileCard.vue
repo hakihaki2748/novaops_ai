@@ -18,7 +18,7 @@ const initials = (name) => {
         .toUpperCase()
 }
 
-const formateDate = (value) => {
+const formatDate = (value) => {
     if (!value) return "-"
 
     return new Date(value).toLocaleString("id-ID", {

@@ -123,7 +123,7 @@ const statusClass = (status) => {
                         v-for="user in props.users"
                         :key="user.id"
                         class="group cursor-pointer transition hover:bg-indigo-50/40"
-                        @click="openDetail(user.id)"
+                        "
                     >
                         <!-- USER -->
                         <td class="px-3 py-3 sm:px-4 sm:py-4 lg:px-6">
