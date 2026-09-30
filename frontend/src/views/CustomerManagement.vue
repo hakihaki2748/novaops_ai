@@ -83,9 +83,12 @@ const detailCustomer = async (id) => {
 
                 <div>
 
-                    <p class="text-sm font-semibold uppercase tracking-wider text-indigo-600">
-                        Customer Management
-                    </p>
+                    <div
+                        class="mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700"
+                        >
+                            <span class="h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
+                            Customer Management
+                        </div>
 
                     <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                         Customers

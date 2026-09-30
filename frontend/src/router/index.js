@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'login',
+      name: "login",
       component: () => import('@/views/Login.vue'),
     },
     // {
@@ -16,34 +16,42 @@ const router = createRouter({
     //   // which is lazy-loaded when the route is visited.
     //   component: () => import('@/views/Register.vue'),
     // },
+    
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('@/views/Dashboard.vue')
-    },
-    {
-      path: '/users',
-      name: 'users',
-      component: () => import('@/views/UserManagement.vue')
-    },
+      path: "/app",
+      component: import("@/layouts/AppLayout.vue"),
+      children: [
+          {
+            path: '',
+            name: 'dashboard',
+            component: () => import('@/views/Dashboard.vue')
+          },
+          
+          {
+            path: '/app/users',
+            name: 'users',
+            component: () => import('@/views/UserManagement.vue')
+          },
 
-    {
-      path: '/users/:id',
-      name: 'user_detail',
-      component: () => import('@/views/UserDetail.vue')
-    },
+          {
+            path: '/app/users/:id',
+            name: 'user_detail',
+            component: () => import('@/views/UserDetail.vue')
+          },
 
-    {
-      path: '/customers',
-      name: 'customers',
-      component: () => import('@/views/CustomerManagement.vue')
-    },
+          {
+            path: '/app/customers',
+            name: 'customers',
+            component: () => import('@/views/CustomerManagement.vue')
+          },
 
-    {
-      path: '/customers/:id',
-      name: 'customer_detail',
-      component: () => import('@/views/CustomerDetail.vue')
-    },
+          {
+            path: '/app/customers/:id',
+            name: 'customer_detail',
+            component: () => import('@/views/CustomerDetail.vue')
+          },
+      ]
+    }
   
   ],
 })
