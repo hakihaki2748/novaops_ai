@@ -35,17 +35,17 @@ const toggleSidebar = () => {
 
     <div class="min-h-screen bg-slate-50">
 
-        <div class="flex min-h-screen">
+        <div class=" min-h-screen">
 
-            <!-- Sidebar -->
-            <AppSidebar
-                :mobile-open="sidebarOpen"
-                @close="closeSidebar"
-            />
+                <!-- Sidebar -->
+                <AppSidebar
+                    :mobile-open="sidebarOpen"
+                    @close="closeSidebar"
+                />
 
 
             <!-- Main -->
-            <div class="flex min-w-0 flex-1 flex-col">
+            <div class="flex min-w-0 flex-1 flex-col lg:ml-72">
 
                 <AppTopbar
                     :title="pageTitle"

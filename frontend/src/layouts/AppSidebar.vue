@@ -94,7 +94,7 @@ const logout = () => {
 
         </Transition>
 
-
+        
         <!-- Sidebar -->
         <aside
             class="
@@ -103,7 +103,7 @@ const logout = () => {
                 border-r border-slate-200
                 bg-white
                 transition-transform duration-300
-                lg:static lg:translate-x-0
+                lg:fixed lg:translate-x-0
             "
             :class="mobileOpen ? 'translate-x-0' : '-translate-x-full'"
         >
