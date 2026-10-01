@@ -20,11 +20,14 @@ const login = async ()=> {
       throw new Error(response.data.message)
     }
     localStorage.setItem("token", response.data.data.token)
+    localStorage.setItem("user", JSON.stringify(response.data.data.user))
     
-    console.log(response.data)
+    console.log(response.data.data.user)
     console.log(response.data.success)
 
-    router.push('/app')
+    router.push({
+      name: "dashboard"
+    })
   } catch(err){
     console.log(err.response?.data);
     console.log(err.response?.data?.status);

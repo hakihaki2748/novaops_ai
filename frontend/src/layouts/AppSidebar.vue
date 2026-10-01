@@ -3,6 +3,10 @@ import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { LayoutDashboard, Users, UserRound, Activity, Settings, LogOut, X } from 'lucide-vue-next';
 
+import { getCurrentUser, clearCurrentUser } from '@/utils/userAuth.js';
+
+
+
 const props = defineProps({
     mobileOpen: {
         type: Boolean,
@@ -14,6 +18,8 @@ const emit = defineEmits(["close"]);
 
 const route = useRoute();
 const router = useRouter();
+
+const currentUser = computed(() => getCurrentUser());
 
 const menuItems = [
     {
@@ -103,7 +109,7 @@ const logout = () => {
                 border-r border-slate-200
                 bg-white
                 transition-transform duration-300
-                lg:fixed lg:translate-x-0
+                lg:translate-x-0
             "
             :class="mobileOpen ? 'translate-x-0' : '-translate-x-full'"
         >
@@ -271,7 +277,7 @@ const logout = () => {
                     <div
                         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700"
                     >
-                        H
+                        {{ currentUser?.name?.charAt(0).toUpperCase() || 'U' }}
                     </div>
 
                     <div class="min-w-0 flex-1">
@@ -279,13 +285,13 @@ const logout = () => {
                         <p
                             class="truncate text-sm font-semibold text-slate-800"
                         >
-                            Haki
+                            {{ currentUser?.name || 'User' }}
                         </p>
 
                         <p
                             class="truncate text-xs text-slate-400"
                         >
-                            Owner
+                            {{ currentUser?.role || 'Role' }}
                         </p>
 
                     </div>

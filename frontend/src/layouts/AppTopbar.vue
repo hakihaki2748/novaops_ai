@@ -1,6 +1,11 @@
 <script setup>
 import { Menu, Bell, Search } from "lucide-vue-next"
 
+import { computed } from 'vue';
+import { getCurrentUser } from '@/utils/userAuth.js';
+
+const currentUser = computed(() => getCurrentUser());
+
 defineProps({
     title: {
         type: String,
@@ -152,7 +157,7 @@ const emit = defineEmits(["toggle-sidebar"])
                         text-indigo-700
                     "
                 >
-                    H
+                    {{ currentUser?.name?.charAt(0).toUpperCase() || 'U' }}
                 </div>
 
                 <div class="hidden text-left md:block">
@@ -160,13 +165,13 @@ const emit = defineEmits(["toggle-sidebar"])
                     <p
                         class="text-xs font-semibold text-slate-800"
                     >
-                        Haki
+                        {{ currentUser?.name || 'User' }}
                     </p>
 
                     <p
                         class="text-[10px] text-slate-400"
                     >
-                        Owner
+                        {{ currentUser?.role || 'Role' }}
                     </p>
 
                 </div>
