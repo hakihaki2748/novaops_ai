@@ -134,13 +134,14 @@ const updateRole = async (id, role, connection ) => {
 }
 
 
-const createUser = async ({ name, phone, email, password, role }, connection ) => {
+const createUser = async ({ company_id, name, phone, email, password, role }, connection ) => {
     const sql = `
     INSERT INTO users 
-    (name, phone, email, password, role )
-    VALUES (?, ?, ?, ?, ?)
+    (company_id, name, phone, email, password, role )
+    VALUES (?, ?, ?, ?, ?, ?)
     `
     const [result] = await connection.execute(sql, [
+        company_id,
         name,
         phone,
         email,

@@ -208,6 +208,7 @@ const createUser = async (payload, currentUser) => {
         }
 
         const userId = await userRepository.createUser({
+            company_id: currentUser.company_id,
             name: payload.name,
             phone: payload.phone,
             email: payload.email,
@@ -216,7 +217,7 @@ const createUser = async (payload, currentUser) => {
         }, connection)
         
         await activityRepository.createLog({
-            company_id: currentUser.id,
+            company_id: currentUser.company_id,
             user_id: currentUser.id,
             actor_role: currentUser.role,
             event_type: "user.created",

@@ -43,7 +43,6 @@ const updateCustomer = async (req, res, next) => {
 }
 
 const findCustomers = async (req, res, next) => {
-    console.log(req.validQuery)
     try{
         const result = await customerService.findCustomers(req.validQuery, req.user);
 
