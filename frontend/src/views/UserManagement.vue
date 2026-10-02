@@ -1,14 +1,26 @@
 <script setup>
 import { useUserStore } from '@/stores/user.store';
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import UserSearch from '@/components/userManagement/UserSearch.vue';
 import UserTable from '@/components/userManagement/UserTable.vue';
 import UserPagination from '@/components/userManagement/UserPagination.vue';
-
+import UserForm from '@/components/userDetail/UserForm.vue';
 
 const userStore = useUserStore();
+
+const showAddUser = ref(false)
+
+const closeAddUser = () => {
+    showAddUser.value = false
+}
+
+const userCreated = (user) => {
+    showAddUser.value = false
+}
+
+
 
 const router = useRouter()
 
@@ -29,13 +41,6 @@ const detailUser = async (id) => {
     })
 }
 
-const updateRole = async (id) => {
-    await userStore.updateRole(id)
-}
-
-const updateStatus = async (id) => {
-    await userStore.updateStatus(id)
-}
 
 const deleteUser = async (id) => {
     await userStore.deleteUser(id)
@@ -91,6 +96,16 @@ onMounted(async () => {
                             Manage user accounts, roles, access and account status.
                         </p>
                     </div>
+
+                    <button
+                        type="button"
+                        @click="showAddUser = true"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+
+                    >
+                        <span class="text-lg leading-none">+</span>
+                        Add User
+                    </button>
 
                     <button
                         type="button"
@@ -272,6 +287,11 @@ onMounted(async () => {
             </section>
 
         </main>
-
+            <UserForm
+                v-if="showAddUser"
+                @close="closeAddUser"
+                @userCreated="userCreated"
+            />
     </div>
+
 </template>

@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useUserStore } from "@/stores/user.store";
+import { useUserStore } from "@/stores/user.store.js";
 
 import UserProfileCard from "@/components/userDetail/UserProfileCard.vue";
 import ActivityTimeline from "@/components/userDetail/ActivityTimeline.vue";
