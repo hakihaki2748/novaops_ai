@@ -1,14 +1,17 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import CustomerToolbar from "@/components/customerManagement/CustomerToolbar.vue";
 import CustomerTable from "@/components/customerManagement/CustomerTable.vue";
 import CustomerPagination from "@/components/customerManagement/CustomerPagination.vue";
 import { useCustomerStore } from "@/stores/customer.store";
-
+import CustomerForm from "@/components/customerDetail/CustomerForm.vue";
 
 const customerStore = useCustomerStore();
+
+const showAddCustomer = ref(false);
+
 
 const router = useRouter()
 
@@ -102,6 +105,7 @@ const detailCustomer = async (id) => {
 
                 <button
                     type="button"
+                    @click="showAddCustomer = true"
                     class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20"
                 >
                     <span class="text-lg leading-none">+</span>
@@ -198,6 +202,11 @@ const detailCustomer = async (id) => {
             />
 
         </div>
+
+        <CustomerForm
+            :show="showAddCustomer"
+            @close="showAddCustomer = false"
+        />
 
     </div>
 
