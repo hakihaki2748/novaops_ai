@@ -77,7 +77,7 @@ const submit = async () => {
                 class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
             >
                 <!-- Header -->
-                <div class="flex items-center justify-between border-b px-5 py-4 sm:px-6">
+                <div class="flex items-center justify-between border-b border-slate-300 px-5 py-4 sm:px-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-900">
                             Add Customer
@@ -156,7 +156,7 @@ const submit = async () => {
                 </div>
 
                 <!-- Footer -->
-                <div class="flex flex-col-reverse gap-3 border-t px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <div class="flex flex-col-reverse gap-3 border-t border-slate-400 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
                     <button
                         type="button"
                         @click="emit('close')"
