@@ -288,7 +288,7 @@ onMounted(async () => {
 
         </main>
             <UserForm
-                v-if="showAddUser"
+               :show="showAddUser"
                 @close="closeAddUser"
                 @userCreated="userCreated"
             />

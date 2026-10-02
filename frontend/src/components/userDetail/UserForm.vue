@@ -55,11 +55,9 @@ const availableRoles = computed(() => ({
 
 // pilihan field untuk digunakan input form create user
 const fields = [
-    { key: "name", label: "Name", type: "text" },
-    { key: "phone", label: "Phone", type: "text" },
-    { key: "email", label: "Email", type: "email" },
-    { key: "password", label: "Password", type: showPassword.value ? "text" : "password" },
-    { key: "role", label: "Role", type: "select", options: availableRoles.value },
+    { key: "name", label: "Name", type: "text", placeholder: "Full Name",  },
+    { key: "phone", label: "Phone", type: "text", placeholder: "Phone Number",  },
+    { key: "email", label: "Email", type: "email", placeholder: "Email Address",  },
 ]
 
 const resetForm = () => {
@@ -140,9 +138,10 @@ const submit = async () => {
 
         emit("success")
         resetForm()
+        console.log("User created successfully")
     }catch(err){
         submitError.value = err.response?.data?.message || err.response?.data?.error
-
+        console.error("Failed to create user:", err)
     }finally{
         submitting.value = false
     }
@@ -167,12 +166,12 @@ const submit = async () => {
                     <div>
                         <h2 class="text-base font-bold text-slate-900 sm:text-lg">
                             Add User
-                        </h2>
+                    </h2>
 
                         <p class="mt-1 text-xs text-slate-500 sm:text-sm">
                             Create a new user account.
-                        </p>
-                    </div>
+                    </p>
+                </div>
 
                     <button
                         type="button"
@@ -180,8 +179,8 @@ const submit = async () => {
                         @click="emit('close')"
                     >
                         ✕
-                    </button>
-                </header>
+                </button>
+            </header>
 
                 <!-- FORM -->
                 <form
@@ -214,7 +213,6 @@ const submit = async () => {
                                 v-model="form[field.key]"
                                 :type="field.type"
                                 :maxlength="field.maxlength"
-                                :autocomplete="field.autocomplete"
                                 :placeholder="field.placeholder"
                                 class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                                 :class="{
@@ -247,7 +245,7 @@ const submit = async () => {
                                             : 'password'
                                     "
                                     autocomplete="new-password"
-                                    placeholder="Minimum 8 characters"
+                                    placeholder="Minimum 12 characters"
                                     class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-14 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                                     :class="{
                                         'border-red-400':
@@ -308,27 +306,6 @@ const submit = async () => {
                                 {{ errors.role[0] }}
                             </p>
                         </div>
-
-                        <!-- STATUS -->
-                        <div>
-                            <label
-                                class="mb-1.5 block text-sm font-semibold text-slate-700"
-                            >
-                                Status
-                            </label>
-
-                            <select
-                                v-model="form.status"
-                                class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
-                                :class="{
-                                    'border-red-400': errors.status?.[0]
-                                }"
-                            >
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="blocked">Blocked</option>
-                            </select>
-                        </div>
                     </div>
 
                     <!-- FOOTER -->
@@ -353,7 +330,7 @@ const submit = async () => {
                         </button>
                     </footer>
                 </form>
-            </div>
         </div>
-    </Teleport>
+    </div>
+</Teleport>
 </template>
