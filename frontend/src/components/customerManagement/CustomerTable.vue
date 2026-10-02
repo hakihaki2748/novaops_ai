@@ -148,6 +148,14 @@ const emit = defineEmits([
                                     Enterprise
                                 </option>
 
+                                <option value="government">
+                                    Government
+                                </option>
+
+                                <option value="startup">
+                                    Startup
+                                </option>
+
                             </select>
 
                         </td>
