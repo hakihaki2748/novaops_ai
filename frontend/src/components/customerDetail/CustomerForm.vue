@@ -5,99 +5,178 @@ import { useCustomerStore } from "@/stores/customer.store";
 const customerStore = useCustomerStore();
 
 const props = defineProps({
-    show: { type: Boolean, default: false },
-})
+    show: {
+        type: Boolean,
+        default: false,
+    },
 
-const emit = defineEmits(["close", "success"])
+    customer: {
+        type: Object,
+        default: null,
+    },
+});
+
+const emit = defineEmits([
+    "close",
+    "success",
+]);
 
 const form = ref({
     name: "",
     email: "",
     phone: "",
-})
+});
 
-const error = ref("")
-const loading = ref(false)
+const error = ref("");
+const loading = ref(false);
+
+const isEdit = () => {
+    return Boolean(props.customer);
+};
 
 const resetForm = () => {
-    form.value = {
-        name: "",
-        email: "",
-        phone: "",
-    }
-    error.value = ""
-}
 
-watch(() => props.show, (newVal) => {
-    if (newVal) {
-        resetForm();
+    form.value = {
+        name: props.customer?.name || "",
+        email: props.customer?.email || "",
+        phone: props.customer?.phone || "",
+    };
+
+    error.value = "";
+};
+
+watch(
+    () => [
+        props.show,
+        props.customer,
+    ],
+    ([show]) => {
+
+        if (show) {
+            resetForm();
+        }
+
+    },
+    {
+        deep: true,
     }
-})
+);
 
 const submit = async () => {
-    if(loading.value) return
 
-    if(!form.value.name || !form.value.email || !form.value.phone){
-        error.value = "Please fill in all required fields."
-        return
+    if (loading.value) return;
+
+    if (
+        !form.value.name.trim() ||
+        !form.value.email.trim()
+    ) {
+
+        error.value =
+            "Name and email are required.";
+
+        return;
     }
 
-    loading.value = true
-    error.value = ""
+    loading.value = true;
+    error.value = "";
 
-    try{
-        await customerStore.createCustomer({
+    try {
+
+        const payload = {
             name: form.value.name.trim(),
             email: form.value.email.trim(),
-            phone: form.value.phone,
-        })
-        emit("success")
-        resetForm()
+            phone: form.value.phone?.trim() || null,
+        };
 
-        console.log("Customer created successfully")
+        if (isEdit()) {
+
+            await customerStore.updateCustomer(
+                props.customer.id,
+                payload
+            );
+
+        } else {
+
+            await customerStore.createCustomer(
+                payload
+            );
+
+        }
+
+        emit("success");
+        emit("close");
+
     } catch (err) {
-        error.value = "An error occurred while submitting the form."
-        console.error("Error creating customer:", err)
+
+        error.value =
+            err.response?.data?.message ||
+            "An error occurred while saving customer.";
+
     } finally {
-        loading.value = false
+
+        loading.value = false;
+
     }
-}
+};
 
 </script>
 
 <template>
+
     <Teleport to="body">
+
         <div
             v-if="show"
             class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm"
             @click.self="emit('close')"
         >
+
             <form
                 @submit.prevent="submit"
                 class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
             >
+
                 <!-- Header -->
-                <div class="flex items-center justify-between border-b border-slate-300 px-5 py-4 sm:px-6">
+
+                <div
+                    class="flex items-center justify-between border-b border-slate-200 px-5 py-4 sm:px-6"
+                >
+
                     <div>
-                        <h2 class="text-lg font-bold text-slate-900">
-                            Add Customer
+
+                        <h2
+                            class="text-lg font-bold text-slate-900"
+                        >
+                            {{ isEdit()
+                                ? "Edit Customer"
+                                : "Add Customer"
+                            }}
                         </h2>
+
                         <p class="text-sm text-slate-500">
-                            Tambahkan customer baru.
+                            {{ isEdit()
+                                ? "Update informasi customer."
+                                : "Tambahkan customer baru."
+                            }}
                         </p>
+
                     </div>
 
                     <button
                         type="button"
                         @click="emit('close')"
-                        class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                        class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
                     >
                         ✕
                     </button>
+
                 </div>
 
                 <!-- Body -->
-                <div class="max-h-[75vh] overflow-y-auto p-5 sm:p-6">
+
+                <div
+                    class="max-h-[75vh] overflow-y-auto p-5 sm:p-6"
+                >
 
                     <div
                         v-if="error"
@@ -106,11 +185,15 @@ const submit = async () => {
                         {{ error }}
                     </div>
 
-                    <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="space-y-4">
 
                         <!-- Name -->
-                        <div class="sm:col-span-2">
-                            <label class="mb-1.5 block text-sm font-medium text-slate-700">
+
+                        <div>
+
+                            <label
+                                class="mb-1.5 block text-sm font-medium text-slate-700"
+                            >
                                 Name
                             </label>
 
@@ -119,13 +202,18 @@ const submit = async () => {
                                 type="text"
                                 maxlength="100"
                                 placeholder="Customer name"
-                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                             />
+
                         </div>
 
                         <!-- Email -->
-                        <div class="sm:col-span-2">
-                            <label class="mb-1.5 block text-sm font-medium text-slate-700">
+
+                        <div>
+
+                            <label
+                                class="mb-1.5 block text-sm font-medium text-slate-700"
+                            >
                                 Email
                             </label>
 
@@ -134,13 +222,18 @@ const submit = async () => {
                                 type="email"
                                 maxlength="100"
                                 placeholder="customer@example.com"
-                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                             />
+
                         </div>
 
                         <!-- Phone -->
+
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-slate-700">
+
+                            <label
+                                class="mb-1.5 block text-sm font-medium text-slate-700"
+                            >
                                 Phone
                             </label>
 
@@ -149,19 +242,26 @@ const submit = async () => {
                                 type="tel"
                                 maxlength="100"
                                 placeholder="+62..."
-                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                             />
+
                         </div>
+
                     </div>
+
                 </div>
 
                 <!-- Footer -->
-                <div class="flex flex-col-reverse gap-3 border-t border-slate-400 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+
+                <div
+                    class="flex flex-col-reverse gap-3 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end sm:px-6"
+                >
+
                     <button
                         type="button"
                         @click="emit('close')"
                         :disabled="loading"
-                        class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                        class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -169,12 +269,23 @@ const submit = async () => {
                     <button
                         type="submit"
                         :disabled="loading"
-                        class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {{ loading ? 'Creating...' : 'Add Customer' }}
+                        {{
+                            loading
+                                ? "Saving..."
+                                : isEdit()
+                                    ? "Save Changes"
+                                    : "Add Customer"
+                        }}
                     </button>
+
                 </div>
+
             </form>
+
         </div>
+
     </Teleport>
+
 </template>

@@ -5,72 +5,148 @@ import { useRouter } from "vue-router";
 import CustomerToolbar from "@/components/customerManagement/CustomerToolbar.vue";
 import CustomerTable from "@/components/customerManagement/CustomerTable.vue";
 import CustomerPagination from "@/components/customerManagement/CustomerPagination.vue";
-import { useCustomerStore } from "@/stores/customer.store";
 import CustomerForm from "@/components/customerDetail/CustomerForm.vue";
+import { useCustomerStore } from "@/stores/customer.store";
 
 const customerStore = useCustomerStore();
+const router = useRouter();
 
-const showAddCustomer = ref(false);
-
-
-const router = useRouter()
+const showCustomerForm = ref(false);
+const selectedCustomer = ref(null);
 
 onMounted(async () => {
-
     await customerStore.loadCustomers();
-
 });
 
 const searchCustomer = async (search) => {
-
     await customerStore.setSearch(search);
-
 };
 
 const filterCustomer = async (filters) => {
-
     for (const [key, value] of Object.entries(filters)) {
-
         customerStore.filters[key] = value;
-
     }
 
     customerStore.pagination.page = 1;
 
     await customerStore.loadCustomers();
-
 };
 
 const sortCustomer = async (sort, order) => {
-
-    await customerStore.setSorting(
-        sort,
-        order
-    );
-
+    await customerStore.setSorting(sort, order);
 };
 
 const resetFilters = async () => {
-
     await customerStore.resetFilters();
-
 };
 
 const changePage = async (page) => {
-
     await customerStore.setPage(page);
-
 };
 
-const detailCustomer = async (id) => {
+/*
+|--------------------------------------------------------------------------
+| Detail
+|--------------------------------------------------------------------------
+*/
 
+const detailCustomer = (id) => {
     router.push({
         name: "customer_detail",
-        params: {
-            id,
-        }
-    })
+        params: { id },
+    });
+};
 
+/*
+|--------------------------------------------------------------------------
+| Create / Edit
+|--------------------------------------------------------------------------
+*/
+
+const openCreate = () => {
+    selectedCustomer.value = null;
+    showCustomerForm.value = true;
+};
+
+const openEdit = (customer) => {
+    selectedCustomer.value = customer;
+    showCustomerForm.value = true;
+};
+
+const closeForm = () => {
+    showCustomerForm.value = false;
+    selectedCustomer.value = null;
+};
+
+/*
+|--------------------------------------------------------------------------
+| Quick Update
+|--------------------------------------------------------------------------
+*/
+
+const updateVip = async (customer, value) => {
+    try {
+        await customerStore.updateCustomerVip(
+            customer.id,
+            value ? 1 : 0
+        );
+    } catch (err) {
+        alert(
+            err.response?.data?.message ||
+            "Gagal mengubah VIP customer."
+        );
+    }
+};
+
+const updateSegment = async (customer, value) => {
+    try {
+        await customerStore.updateCustomerSegment(
+            customer.id,
+            value
+        );
+    } catch (err) {
+        alert(
+            err.response?.data?.message ||
+            "Gagal mengubah segment customer."
+        );
+    }
+};
+
+const updateStatus = async (customer, value) => {
+    try {
+        await customerStore.updateCustomerStatus(
+            customer.id,
+            value
+        );
+    } catch (err) {
+        alert(
+            err.response?.data?.message ||
+            "Gagal mengubah status customer."
+        );
+    }
+};
+
+/*
+|--------------------------------------------------------------------------
+| Delete
+|--------------------------------------------------------------------------
+*/
+
+const deleteCustomer = async (customer) => {
+    const confirmed = window.confirm(
+        `Hapus customer "${customer.name}"?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+        await customerStore.deleteCustomer(customer.id);
+    } catch (err) {
+        alert(
+            err.response?.data?.message ||
+            "Gagal menghapus customer."
+        );
+    }
 };
 </script>
 
@@ -82,18 +158,25 @@ const detailCustomer = async (id) => {
 
             <!-- Header -->
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
 
                 <div>
 
                     <div
                         class="mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700"
-                        >
-                            <span class="h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
-                            Customer Management
-                        </div>
+                    >
+                        <span
+                            class="h-1.5 w-1.5 rounded-full bg-indigo-600"
+                        ></span>
 
-                    <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                        Customer Management
+                    </div>
+
+                    <h1
+                        class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
+                    >
                         Customers
                     </h1>
 
@@ -105,7 +188,7 @@ const detailCustomer = async (id) => {
 
                 <button
                     type="button"
-                    @click="showAddCustomer = true"
+                    @click="openCreate"
                     class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20"
                 >
                     <span class="text-lg leading-none">+</span>
@@ -130,7 +213,9 @@ const detailCustomer = async (id) => {
                 class="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm"
             >
 
-                <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600"></div>
+                <div
+                    class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600"
+                ></div>
 
                 <p class="mt-4 text-sm text-slate-500">
                     Loading customers...
@@ -169,7 +254,9 @@ const detailCustomer = async (id) => {
                 class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center"
             >
 
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl">
+                <div
+                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl"
+                >
                     👥
                 </div>
 
@@ -189,6 +276,11 @@ const detailCustomer = async (id) => {
                 v-else
                 :customers="customerStore.customers"
                 @detail="detailCustomer"
+                @edit="openEdit"
+                @update-vip="updateVip"
+                @update-segment="updateSegment"
+                @update-status="updateStatus"
+                @delete="deleteCustomer"
             />
 
             <!-- Pagination -->
@@ -203,9 +295,12 @@ const detailCustomer = async (id) => {
 
         </div>
 
+        <!-- Create / Edit Form -->
+
         <CustomerForm
-            :show="showAddCustomer"
-            @close="showAddCustomer = false"
+            :show="showCustomerForm"
+            :customer="selectedCustomer"
+            @close="closeForm"
         />
 
     </div>
