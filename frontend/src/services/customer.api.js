@@ -21,19 +21,19 @@ const updateCustomer = (id, payload) => {
 }
 
 const updateCustomerVip = (id, isVip) => {
-    return api.patch(`/customers/${id}`, {
+    return api.patch(`/customers/${id}/vip`, {
         isVip,
     })
 }
 
 const updateCustomerSegment = (id, segment) => {
-    return api.patch(`/customers/${id}`, {
+    return api.patch(`/customers/${id}/segment`, {
         segment,
     })
 }
 
 const updateCustomerStatus = (id, status) => {
-    return api.patch(`/customers/${id}`, {
+    return api.patch(`/customers/${id}/status`, {
         status,
     })
 }

@@ -1,10 +1,11 @@
 <script setup>
-defineProps({
+const props = defineProps({
     customers: {
         type: Array,
         default: () => []
     }
 });
+
 
 const emit = defineEmits([
     "detail",
@@ -196,7 +197,7 @@ const emit = defineEmits([
 
                         <td class="px-6 py-4">
 
-                            <label class="inline-flex cursor-pointer items-center">
+                            <label class="inline-flex cursor-pointer items-center relative">
 
                                 <input
                                     type="checkbox"
@@ -208,18 +209,24 @@ const emit = defineEmits([
                                             $event.target.checked
                                         )
                                     "
-                                    class="peer sr-only"
+                                    class="peer sr-only "
                                 />
 
                                 <span
                                     class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-indigo-600"
                                 >
 
-                                    <span
-                                        class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition peer-checked:translate-x-5"
-                                    ></span>
+                                    <!-- <span
+                                        class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-5"
+                                    ></span> -->
 
                                 </span>
+
+                                 <!-- Knob -->
+                                <span
+                                    class="pointer-events-none absolute left-1 top-1 block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 peer-checked:translate-x-5"
+                                ></span>
+
 
                                 <span
                                     class="ml-2 text-xs font-medium text-slate-500"

@@ -44,24 +44,12 @@ const changePage = async (page) => {
     await customerStore.setPage(page);
 };
 
-/*
-|--------------------------------------------------------------------------
-| Detail
-|--------------------------------------------------------------------------
-*/
-
 const detailCustomer = (id) => {
     router.push({
         name: "customer_detail",
         params: { id },
     });
 };
-
-/*
-|--------------------------------------------------------------------------
-| Create / Edit
-|--------------------------------------------------------------------------
-*/
 
 const openCreate = () => {
     selectedCustomer.value = null;
@@ -78,17 +66,12 @@ const closeForm = () => {
     selectedCustomer.value = null;
 };
 
-/*
-|--------------------------------------------------------------------------
-| Quick Update
-|--------------------------------------------------------------------------
-*/
 
 const updateVip = async (customer, value) => {
     try {
         await customerStore.updateCustomerVip(
             customer.id,
-            value ? 1 : 0
+            value ? true : false
         );
     } catch (err) {
         alert(
@@ -99,6 +82,7 @@ const updateVip = async (customer, value) => {
 };
 
 const updateSegment = async (customer, value) => {
+
     try {
         await customerStore.updateCustomerSegment(
             customer.id,
@@ -126,11 +110,6 @@ const updateStatus = async (customer, value) => {
     }
 };
 
-/*
-|--------------------------------------------------------------------------
-| Delete
-|--------------------------------------------------------------------------
-*/
 
 const deleteCustomer = async (customer) => {
     const confirmed = window.confirm(
