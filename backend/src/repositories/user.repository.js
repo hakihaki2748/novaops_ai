@@ -60,9 +60,11 @@ const findUsers = async ({
 
 const findUserById = async (id, connection = db ) => {
     const sql = `
-    SELECT id, name, email, phone, role, status FROM users
-    WHERE id = ?
-    AND deleted_at IS NULL;
+    SELECT u.id, u.name, u.email, u.phone, u.role, u.status, u.company_id, c.company_name, u.created_at, u.updated_at
+    FROM users u
+    LEFT JOIN companies c ON u.company_id = c.id
+    WHERE u.id = ?
+    AND u.deleted_at IS NULL;
     `
     const [user] = await connection.execute(sql, [id])
     return user[0];
