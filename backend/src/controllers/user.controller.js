@@ -24,6 +24,19 @@ const findUserById = async (req, res, next) => {
     }
 }
 
+const updateUser = async (req, res, next) => {
+    const id = Number(req.params.id)
+    const { name, email, phone } = req.body
+    try{
+        const result = await userService.updateUser({id, name, email, phone, currentUser: req.user})
+        return res.status(200).json(
+            apiResponse.success("Update Berhasil", result)
+        )
+    }catch(err){
+        next(err)
+    }
+}
+
 const updateStatus = async (req, res, next) => {
     try {
         const result = await userService.updateStatus({
@@ -83,6 +96,7 @@ const createUser = async (req, res, next) => {
 export default {
     getUsers,
     findUserById,
+    updateUser,
     updateStatus,
     updateRole,
     softDelete,

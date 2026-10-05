@@ -13,6 +13,7 @@ import createUserSchema from "../validations/schemas/createUser.schema.js"
 router.get("/", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), userController.getUsers);
 router.get("/:id", authMiddleware, roleMiddleware("owner", "manager", "admin", "user"), userController.findUserById);
 router.post("/", authMiddleware, roleMiddleware("owner", "admin"),validate(createUserSchema), userController.createUser);
+router.patch("/:id", authMiddleware, roleMiddleware("owner", "admin"), validate(updateStatusSchema), userController.updateUser);
 router.patch("/:id/status",authMiddleware, roleMiddleware("owner", "admin"), validate(updateStatusSchema), userController.updateStatus);
 router.patch("/:id/role",authMiddleware, roleMiddleware("owner", "admin"), validate(updateRoleSchema), userController.updateRole);
 router.delete("/:id", authMiddleware, roleMiddleware("owner", "admin"), userController.softDelete);

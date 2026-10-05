@@ -75,6 +75,50 @@ const findUserById = async (id, currentUser) => {
 };
 
 
+const updateUser = async ({id, name, email, phone, currentUser}) => {
+
+    //cek email apakah sudah digunakan oleh user lain
+    const findEmail = await userRepository.finduserByEmail(email)
+
+    //jika email ditemukan, dan id tidak sama dengan idUpdate maka gagal
+    if(findEmail.length !== 0 && findEmail[0].id !== Number(id)) throw new AppError("Email Sudah Digunakan", 400)
+    
+    const user = await userRepository.getuserById(id, currentUser.company_id)
+
+    if(!user || user.deleted_at !== null) throw new AppError("user tidak Ditemukan", 404)
+    
+    const connection = await transaction()
+    try {
+        const updateUser = await userRepository.updateuser({
+            id: Number(id),
+            company_id: currentUser.company_id,
+            name: name,
+            email: email,
+            phone: phone,
+        }, connection)
+
+        await activityRepository.createLog({
+            company_id: currentUser.company_id,
+            user_id: currentUser.id,
+            actor_role: currentUser.role,
+            event_type: "customer.updated",
+            entity_type: "customer",
+            entity_id: Number(id),
+            description: `${currentUser.role} mengupdate customer`
+        }, connection)
+
+        await commit(connection)
+        return updateUser;
+    } catch (err) {
+        await rollback(connection)
+        throw err
+    }finally{
+        connection.release()
+    }
+   
+}
+
+
 const updateStatus = async ({id, status, currentUser}) => {
     //selain admin dan owner tidak boleh
     if(currentUser.role !== "owner" && currentUser.role !== "admin") throw new AppError("Tidak Memiliki Akses", 403);
@@ -289,6 +333,7 @@ const softDelete = async ({id, currentUser}) => {
 export default {
     getUsers,
     findUserById,
+    updateUser,
     updateStatus,
     updateRole,
     softDelete,

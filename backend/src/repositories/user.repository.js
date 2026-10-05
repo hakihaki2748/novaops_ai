@@ -16,23 +16,24 @@ const findUsers = async ({
     const offset = (page - 1) * limit;
 
     let sql = `
-    SELECT id, name, email, role, status
-    FROM users
+    SELECT u.id, u.name, u.email, u.role, u.status, u.company_id, c.company_name, u.created_at, u.updated_at
+    FROM users u
+    LEFT JOIN companies c ON u.company_id = c.id
     WHERE 1 
-    AND deleted_at IS NULL
+    AND u.deleted_at IS NULL
     `
     //buat variabel untuk menampung nilai params dinamis
     const params = []
 
     //saat search dilakukan
     if(search){
-        sql += ` AND (name LIKE ? OR email LIKE ?)`;
+        sql += ` AND (u.name LIKE ? OR u.email LIKE ?)`;
         params.push(`%${search}%`, `%${search}%`)
     }
 
     //hanya user yang active
     if (activeOnly){
-        sql += ` AND status = ?`;
+        sql += ` AND u.status = ?`;
         params.push("active")
     }
 
@@ -114,6 +115,35 @@ const countUsers = async ({
     return result[0].total;
 }
 
+
+
+const updateUser = async ({id, company_id, name, email, phone}, connection = db) => { 
+    const sql = `
+        UPDATE users
+        SET name = ?, email = ?, phone = ?, updated_at = NOW()
+        where id = ?
+        AND company_id = ?
+        AND deleted_at IS NULL
+    `
+    try{
+        const [result] = await connection.execute(sql, [
+             
+            name, 
+            email, 
+            phone, 
+            id,
+            company_id
+        ])
+
+        return result
+    }catch(err){
+        if(err.code === "ER_DUP_ENTRY") throw new AppError("Email Sudah Digunakan", 400)
+        throw err;
+    }
+    
+}
+
+
 const updateStatus = async (id, status, connection ) => {
     const sql = `
     UPDATE users
@@ -171,6 +201,7 @@ export default {
     findUsers,
     findUserById,
     countUsers,
+    updateUser,
     updateStatus,
     updateRole,
     softDelete,
