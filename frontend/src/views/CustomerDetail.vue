@@ -5,7 +5,7 @@ import { useCustomerStore } from '@/stores/customer.store';
 
 import CustomerProfileCard from '@/components/customerDetail/CustomerProfileCard.vue'
 import CustomerStats from '@/components/customerDetail/CustomerStats.vue'
-import CustomersActivityTimeline from '@/components/customerDetail/CustomerActivityTimeline.vue'
+import CustomerActivityTimeline from '@/components/customerDetail/CustomerActivityTimeline.vue'
 
 
 

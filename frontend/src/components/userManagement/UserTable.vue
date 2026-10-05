@@ -41,7 +41,7 @@ const formatDate = (value) => {
     return new Date(value).toLocaleString("id-ID", {
         day: "2-digit",
         month: "short",
-        year: numeric
+        year: "numeric"
     })
 }
 
