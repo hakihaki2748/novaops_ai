@@ -10,16 +10,46 @@ import UserForm from '@/components/userDetail/UserForm.vue';
 
 const userStore = useUserStore();
 
-const showAddUser = ref(false)
+const showUserForm = ref(false)
+const editForm = ref(null)
 
+// Membuka form Tambah
+const handleAddUser = () => {
+    editForm.value = null
+    showUserForm.value = true
+}
+
+// Membuka form Edit
+const handleEditUser = (user) => {
+    editForm.value = { ...user }
+    showUserForm.value = true
+}
+
+// Setelah user berhasil ditambahkan
+const userCreated = async () => {
+    showUserForm.value = false
+    editForm.value = null
+
+    await userStore.loadUsers()
+}
+
+// Setelah user berhasil diperbarui
+const handleUpdateUser = async () => {
+    showUserForm.value = false
+    editForm.value = null
+
+    await userStore.loadUsers()
+}
+
+// Menutup form
 const closeAddUser = () => {
-    showAddUser.value = false
+    showUserForm.value = false
+    editForm.value = null
 }
 
-const userCreated = (user) => {
-    showAddUser.value = false
+const deleteUser = async (id) => {
+    await userStore.deleteUser(id)
 }
-
 
 
 const router = useRouter()
@@ -42,9 +72,6 @@ const detailUser = async (id) => {
 }
 
 
-const deleteUser = async (id) => {
-    await userStore.deleteUser(id)
-}
 
 const activeUsers = computed(() => {
     return userStore.users.filter((user) => user.status === "active" ).length
@@ -99,7 +126,7 @@ onMounted(async () => {
 
                     <button
                         type="button"
-                        @click="showAddUser = true"
+                        @click="handleAddUser"
                         class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
 
                     >
@@ -269,7 +296,7 @@ onMounted(async () => {
                     v-else
                     :users="userStore.users"
                     @deleteUser="deleteUser"
-                    @detailUser="detailUser"
+                    @editUser="handleEditUser"
                 />
 
                 <!-- PAGINATION -->
@@ -288,9 +315,11 @@ onMounted(async () => {
 
         </main>
             <UserForm
-               :show="showAddUser"
+                :show="showUserForm"
+                :user="editForm"
                 @close="closeAddUser"
                 @userCreated="userCreated"
+                @userUpdated="handleUpdateUser"
             />
     </div>
 

@@ -7,7 +7,11 @@ const props = defineProps({
     users: {type: Array, default: () => []},
 })
 
-const emit = defineEmits(["deleteUser"])
+
+const emit = defineEmits([
+    "deleteUser",
+    "editUser"
+])
 
 function openDetail (id) {
     router.push({
@@ -211,6 +215,13 @@ const statusClass = (status) => {
                                 <span>
                                     →
                                 </span>
+                            </button>
+                            <button
+                                type="button"
+                                @click="$emit('editUser', user)"
+                                class="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-500 transition hover:bg-white hover:text-indigo-600 hover:shadow-sm sm:px-3 sm:py-2 sm:text-sm"
+                            >
+                                Edit
                             </button>
                         </td>
                     </tr>

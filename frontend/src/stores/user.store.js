@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import { getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser, getLogs } from "../services/user.api"
+import { getUsers, getUserById, createUser, updateUser, updateStatus, updateRole, deleteUser, getLogs } from "../services/user.api"
 
 export const useUserStore = defineStore("user", {
     
@@ -111,6 +111,23 @@ export const useUserStore = defineStore("user", {
                 this.error = err.response?.data?.message || err.message
                 throw err
 
+            }finally{
+                this.loading = false
+            }
+        },
+
+        async updateUser (id, data) {
+            this.loading = true
+            this.error = null
+
+            try{
+                const res = await updateUser(id, data)
+
+                await this.refreshUsers()
+                return res.data
+            }catch(err){
+                this.error = err.response?.data?.message || err.message
+                throw err
             }finally{
                 this.loading = false
             }

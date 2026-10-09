@@ -16,6 +16,10 @@ const createUser = (payload) => {
     return api.post("/users", payload)
 }
 
+const updateUser = (id, data) => {
+  return api.patch(`/users/${id}`, data)
+}
+
 const updateStatus = (id, status) => {
     return api.patch(`/users/${id}/status`, {
         status,
@@ -37,5 +41,5 @@ const getLogs = (id) => {
 }
 
 export {
-    getUsers, getUserById, createUser, updateStatus, updateRole, deleteUser, getLogs
+    getUsers, getUserById, createUser, updateUser, updateStatus, updateRole, deleteUser, getLogs
 }

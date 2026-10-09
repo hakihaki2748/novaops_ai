@@ -5,13 +5,17 @@ import { userSchema } from '@/schemas/user.schema';
 
 const userStore = useUserStore();
 const props = defineProps({
+    user: {
+        type: Object,
+        default: null
+    },
     show: {
         type: Boolean,
         default: false,
     }
 })
 
-const emit = defineEmits(["close", "success"])
+const emit = defineEmits(["close", "userCreated", "userUpdated"])
 
 
 //membuat form untuk menampung data user
@@ -60,6 +64,13 @@ const fields = [
     { key: "email", label: "Email", type: "email", placeholder: "Email Address",  },
 ]
 
+
+//agar nilai fokus menjadi boolean
+const isEdit = computed(() => !!props.user)
+
+console.log(props.user)
+
+
 const resetForm = () => {
     form.value = {
         name: "",
@@ -80,72 +91,133 @@ const resetForm = () => {
 }
 
 //gunakan watch agar setiap kali props.show berubah, nolai form selalu kosong
-watch(() => props.show, (newVal) => {
-    if(newVal){
+watch(
+    () => [props.show, props.user],
+    ([show, user]) => {
+        // Modal ditutup: tidak perlu mengisi form
+        if (!show) {
+            return
+        }
+
+        // Bersihkan form setiap kali modal dibuka
         resetForm()
+
+        if (user) {
+            // Mode Edit
+            form.value.name = user.name ?? ""
+            form.value.phone = user.phone ?? ""
+            form.value.email = user.email ?? ""
+            form.value.role = user.role ?? availableRoles.value[0]
+        } else {
+            // Mode Tambah
+            form.value.role = availableRoles.value[0] ?? ""
+        }
+    },
+    {
+        immediate: true
     }
-})
+)
 
 //lakukan validasi dataForm sebelum di submit
-const validation = () => {
-    let valid = true
+const  validation = () => {
     errors.value = {
-        name: "",
-        phone: "",
-        email: "",
-        password: "",
-        role: "",
+        name: [],
+        phone: [],
+        email: [],
+        password: [],
+        role: [],
     }
 
     const result = userSchema.safeParse(form.value)
 
-    if(!result.success) {
+    if (!result.success) {
         errors.value = result.error.flatten().fieldErrors
         return false
     }
 
-    if(!availableRoles.value.includes(form.value.role)){
+    if (!availableRoles.value.includes(form.value.role)) {
         errors.value.role = ["Role tidak valid"]
         return false
     }
 
-    errors.value = {}
-    return valid
+    return true
 }
 
 
 //submit data
-const submit = async () => {
-    if(submitting.value) return
+const submit =  async () => {
+    if (submitting.value) return
 
     submitting.value = true
     submitError.value = ""
 
-    try{
-        const data = userSchema.parse(form.value)
-
-        if(!data){
-            throw new Error("Data tidak valid")
+    try {
+        // Validasi field dasar
+        if (
+            !form.value.name.trim() ||
+            !form.value.email.trim() ||
+            !form.value.phone.trim()
+        ) {
+            submitError.value = "Nama, email, dan nomor telepon wajib diisi."
+            return
         }
 
-        await userStore.createUser({
-            name: data.name,
-            phone: data.phone,
-            email: data.email,
-            password: data.password,
-            role: data.role,
-        })
+        if (!availableRoles.value.includes(form.value.role)) {
+            errors.value.role = ["Role tidak valid"]
+            return
+        }
 
-        emit("success")
+        const payload = {
+            name: form.value.name.trim(),
+            phone: form.value.phone.trim(),
+            email: form.value.email.trim(),
+            role: form.value.role,
+        }
+
+        if (isEdit.value) {
+            // MODE EDIT
+            await userStore.updateUser(props.user.id, payload)
+
+            emit("userUpdated")
+        } else {
+            // MODE TAMBAH
+            const result = userSchema.safeParse(form.value)
+
+            if (!result.success) {
+                errors.value = {
+                    name: [],
+                    phone: [],
+                    email: [],
+                    password: [],
+                    role: [],
+                    ...result.error.flatten().fieldErrors,
+                }
+
+                submitError.value = "Periksa kembali data yang Anda masukkan."
+                return
+            }
+
+            await userStore.createUser({
+                ...payload,
+                password: result.data.password,
+            })
+
+            emit("userCreated")
+        }
+
         resetForm()
-        console.log("User created successfully")
-    }catch(err){
-        submitError.value = err.response?.data?.message || err.response?.data?.error
-        console.error("Failed to create user:", err)
-    }finally{
+        emit("close")
+    } catch (err) {
+        submitError.value =
+            err.response?.data?.message ||
+            err.response?.data?.error ||
+            err.message ||
+            "Terjadi kesalahan saat menyimpan data."
+
+        console.error("Failed to save user:", err)
+    } finally {
         submitting.value = false
     }
-
 }
 </script>
 
@@ -165,14 +237,15 @@ const submit = async () => {
                 >
                     <div>
                         <h2 class="text-base font-bold text-slate-900 sm:text-lg">
-                            Add User
+                            {{ isEdit ? 'Edit User' : 'Add User' }}
                     </h2>
 
                         <p class="mt-1 text-xs text-slate-500 sm:text-sm">
-                            Create a new user account.
+                            {{ isEdit ? 'Edit user details' : 'Create a new user account.' }}
                     </p>
                 </div>
 
+                
                     <button
                         type="button"
                         class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
@@ -229,7 +302,7 @@ const submit = async () => {
                         </div>
 
                         <!-- PASSWORD -->
-                        <div>
+                        <div v-if="!isEdit">
                             <label
                                 class="mb-1.5 block text-sm font-semibold text-slate-700"
                             >
@@ -237,7 +310,7 @@ const submit = async () => {
                             </label>
 
                             <div class="relative">
-                                <input
+                                <input 
                                     v-model="form.password"
                                     :type="
                                         showPassword
@@ -326,7 +399,7 @@ const submit = async () => {
                             :disabled="submitting"
                             class="w-full rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                         >
-                            {{ submitting ? 'Creating...' : 'Add User' }}
+                            {{ isEdit ? 'Updating...' : 'Add User' }}
                         </button>
                     </footer>
                 </form>
