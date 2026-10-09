@@ -16,7 +16,7 @@ const findUsers = async ({
     const offset = (page - 1) * limit;
 
     let sql = `
-    SELECT u.id, u.name, u.email, u.role, u.status, u.company_id, c.company_name, u.created_at, u.updated_at
+    SELECT u.id, u.name, u.email,u.phone, u.role, u.status, u.company_id, c.company_name, u.created_at, u.updated_at
     FROM users u
     LEFT JOIN companies c ON u.company_id = c.id
     WHERE 1 
