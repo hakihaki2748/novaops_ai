@@ -223,6 +223,13 @@ const statusClass = (status) => {
                             >
                                 Edit
                             </button>
+                            <button
+                                type="button"
+                                @click="$emit('deleteUser', user.id)"
+                                class="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                                >
+                                Delete
+                            </button>
                         </td>
                     </tr>
                 </tbody>
