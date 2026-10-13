@@ -47,7 +47,12 @@ const closeAddUser = () => {
     editForm.value = null
 }
 
-const deleteUser = async (id) => {
+const handleDeleteUser = async (id) => {
+
+    const confirmed = window.confirm("Hapus user?")
+
+    if(!confirmed) return;
+
     await userStore.deleteUser(id)
 }
 
@@ -295,7 +300,7 @@ onMounted(async () => {
                 <UserTable
                     v-else
                     :users="userStore.users"
-                    @deleteUser="deleteUser"
+                    @deleteUser="handleDeleteUser"
                     @editUser="handleEditUser"
                 />
 

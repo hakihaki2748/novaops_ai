@@ -346,7 +346,7 @@ const submit =  async () => {
                         </div>
 
                         <!-- ROLE -->
-                        <div>
+                        <div v-if="!isEdit">
                             <label
                                 class="mb-1.5 block text-sm font-semibold text-slate-700"
                             >
